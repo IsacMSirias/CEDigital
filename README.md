@@ -68,6 +68,13 @@ La universidad CE ha decidido implementar un sistema que permita gestionar el pr
         <sub><b>Gabo</b></sub>
       </a>
     </td>
+  <td align="center">
+      <a href="https://github.com/emarojass05">
+        <img src="https://avatars.githubusercontent.com/u/142690430?v=4" width="100px;" alt="Usuario 4"/>
+        <br />
+        <sub><b>Gabo</b></sub>
+      </a>
+    </td>
   </tr>
 </table>
 
