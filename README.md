@@ -46,6 +46,13 @@ La universidad CE ha decidido implementar un sistema que permita gestionar el pr
         <sub><b>Isac</b></sub>
       </a>
     </td>
+  <td align="center">
+      <a href="https://github.com/MrGabo06">
+        <img src="https://avatars.githubusercontent.com/u/132622106?v=4" width="100px;" alt="Usuario 2"/>
+        <br />
+        <sub><b>Isac</b></sub>
+      </a>
+    </td>
   </tr>
 </table>
 
