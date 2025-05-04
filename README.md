@@ -57,6 +57,4 @@ La universidad CE ha decidido implementar un sistema que permita gestionar el pr
 </table>
 
 
-## Licencia
-Este proyecto está bajo la licencia MIT. Ver [LICENSE](./LICENSE) para más detalles.
 
