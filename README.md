@@ -41,7 +41,7 @@ La universidad CE ha decidido implementar un sistema que permita gestionar el pr
   <tr>
     <td align="center">
       <a href="https://github.com/IsacMSirias">
-        <img src="https://github.com/IsacMSirias.png" width="100px;" alt="Usuario 2"/>
+        <img src="https://github.com/IsacMSirias.png" width="100px;" alt="Usuario 1"/>
         <br />
         <sub><b>Isac</b></sub>
       </a>
@@ -49,6 +49,21 @@ La universidad CE ha decidido implementar un sistema que permita gestionar el pr
   <td align="center">
       <a href="https://github.com/MrGabo06">
         <img src="https://avatars.githubusercontent.com/u/132622106?v=4" width="100px;" alt="Usuario 2"/>
+        <br />
+        <sub><b>Gabo</b></sub>
+      </a>
+    </td>
+<td align="center">
+      <a href="https://github.com/EmMongeHnz">
+        <img src="https://avatars.githubusercontent.com/u/133249327?v=4" width="100px;" alt="Usuario 3"/>
+        <br />
+        <sub><b>Gabo</b></sub>
+      </a>
+    </td>
+
+<td align="center">
+      <a href="https://github.com/gabrll05">
+        <img src="https://avatars.githubusercontent.com/u/142859449?v=4" width="100px;" alt="Usuario 4"/>
         <br />
         <sub><b>Gabo</b></sub>
       </a>
