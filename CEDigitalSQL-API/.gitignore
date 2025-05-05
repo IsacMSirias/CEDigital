@@ -1,0 +1,14 @@
+# Carpetas de VS y build
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Archivos temporales
+*.db
+*.log
+*.bak
+
+# Archivos de configuración locales
+appsettings.Development.json
