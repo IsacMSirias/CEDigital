@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CEDigitalSQL_API.Migrations
+namespace CEDigitalSQL_API.Migrations.Semestre
 {
-    [DbContext(typeof(CursoContext))]
-    partial class CursoContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SemestreContext))]
+    partial class SemestreContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace CEDigitalSQL_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CEDigitalSQL_API.Models.Cursos", b =>
+            modelBuilder.Entity("CEDigitalSQL_API.Models.Semestre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,7 +45,7 @@ namespace CEDigitalSQL_API.Migrations
                     b.HasIndex("NombreCurso")
                         .IsUnique();
 
-                    b.ToTable("Cursos");
+                    b.ToTable("Semestres");
                 });
 #pragma warning restore 612, 618
         }

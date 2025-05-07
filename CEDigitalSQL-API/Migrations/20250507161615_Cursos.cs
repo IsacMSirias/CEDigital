@@ -16,8 +16,8 @@ namespace CEDigitalSQL_API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreCurso = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Creditos = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    NombreCurso = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Creditos = table.Column<int>(type: "int", nullable: false),
                     Grupo = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

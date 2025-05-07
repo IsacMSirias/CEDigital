@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CEDigitalSQL_API.Migrations
+namespace CEDigitalSQL_API.Migrations.Semestre
 {
-    [DbContext(typeof(CursoContext))]
-    [Migration("20250505184942_Cursos")]
-    partial class Cursos
+    [DbContext(typeof(SemestreContext))]
+    [Migration("20250507164626_Semestre")]
+    partial class Semestre
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace CEDigitalSQL_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CEDigitalSQL_API.Models.Cursos", b =>
+            modelBuilder.Entity("CEDigitalSQL_API.Models.Semestre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,7 +33,6 @@ namespace CEDigitalSQL_API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Creditos")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<int>("Grupo")
@@ -41,14 +40,15 @@ namespace CEDigitalSQL_API.Migrations
 
                     b.Property<string>("NombreCurso")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NombreCurso")
                         .IsUnique();
 
-                    b.ToTable("Cursos");
+                    b.ToTable("Semestres");
                 });
 #pragma warning restore 612, 618
         }

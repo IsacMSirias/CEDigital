@@ -2,7 +2,8 @@
 
 namespace CEDigitalSQL_API.Models
 {
-    public class Cursos
+
+    public class Semestre
     {
         public int Id { get; set; }
 
@@ -13,5 +14,10 @@ namespace CEDigitalSQL_API.Models
 
         public int Grupo { get; set; }
     }
+
+
 }
+
+
+
 
