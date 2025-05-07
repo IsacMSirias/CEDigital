@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "fnZHPQxUgQxevD0zDcWrBqztFJJo9gJAbdzjGDj/OLA=",
+  "Source": "CEDigitalSQL-API",
+  "BasePath": "_content/CEDigitalSQL-API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
