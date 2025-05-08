@@ -10,12 +10,12 @@ namespace CEDigitalSQL_API.Models
         }
        
 
-        public DbSet<Semestre> Semestres { get; set; }
+        public DbSet<Semestre> Semestre { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Semestre>().HasIndex(c => c.NombreCurso).IsUnique();
+            modelBuilder.Entity<Semestre>().HasIndex(c => c.IdSemestre).IsUnique();
 
         }
     }

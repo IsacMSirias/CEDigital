@@ -4,16 +4,16 @@ namespace CEDigitalSQL_API.Models
 {
     public class CursoContext : DbContext
     {
-       public CursoContext(DbContextOptions options) : base(options)
+       public CursoContext(DbContextOptions<CursoContext> options) : base(options)
         {
         }
 
-        public DbSet<Cursos> Cursos { get; set; }
+        public DbSet<Curso> Curso { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Cursos>().HasIndex(c => c.NombreCurso).IsUnique();
+            modelBuilder.Entity<Curso>().HasIndex(c => c.IdCurso).IsUnique();
 
         }
     }

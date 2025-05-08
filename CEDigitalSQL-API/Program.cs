@@ -7,12 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-
-// Contexto del Curso para que que SQL lo reconozca
-builder.Services.AddDbContext<CursoContext>(o =>{o.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection"));});
+builder.Services.AddDbContext<CursoContext>(o =>{o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));});
 
 // Contexto del Semestre para que que SQL lo reconozca
-builder.Services.AddDbContext<SemestreContext>(o => {o.UseSqlServer(builder.Configuration.GetConnectionString("DefualtConnection"));});
+builder.Services.AddDbContext<SemestreContext>(o => {o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));});
+
+// Contexto del Semestre para que que SQL lo reconozca
+builder.Services.AddDbContext<GrupoContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
