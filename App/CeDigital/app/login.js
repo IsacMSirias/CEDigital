@@ -1,42 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+// login.js
+import { useState } from 'react';
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const Login = ({ onSuccess }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        if (email === '' || password === '') {
-            Alert.alert('Error', 'Por favor, complete todos los campos.');
-        } else {
-            // Aquí puedes agregar la lógica de autenticación
-            Alert.alert('Éxito', `Bienvenido, ${email}`);
-        }
-    };
+  const handleLogin = () => {
+    if (email.trim() === '' || password.trim() === '') {
+      Alert.alert('Error', 'Por favor, complete todos los campos.');
+    } else {
+      Alert.alert('Éxito', `Bienvenido, ${email}`);
+      onSuccess(); // Navega a MainPage
+    }
+  };
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Iniciar Sesión</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Correo electrónico"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonText}>Ingresar</Text>
-            </TouchableOpacity>
-        </View>
-    );
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <Text style={styles.title}>Iniciar Sesión</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Correo electrónico"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Ingresar</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -76,5 +80,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
 export default Login;
