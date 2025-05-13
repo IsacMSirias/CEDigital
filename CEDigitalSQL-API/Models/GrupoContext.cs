@@ -15,7 +15,23 @@ namespace CEDigitalSQL_API.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Grupo>().HasIndex(c => c.IdGrupo).IsUnique();
+
+            // Primary Key
+            modelBuilder.Entity<Grupo>()
+                .HasKey(g => g.IdGrupo);
+
+            // Foreign Keys
+            modelBuilder.Entity<Grupo>()
+                .HasOne<Semestre>()
+                .WithMany()
+                .HasForeignKey(s => s.IdSemestre)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Grupo>()
+                .HasOne<Curso>()
+                .WithMany()
+                .HasForeignKey(c => c.IdCurso)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

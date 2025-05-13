@@ -1,23 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace CEDigitalSQL_API.Models
+namespace CEDigitalSQL_API.Models;
+
+public partial class Semestre
 {
+    [Key]
+    public int IdSemestre { get; set; }
 
-    public class Semestre
-    {
-        [Key]
-        public int IdSemestre { get; set; }
+    public int AñoSemestre { get; set; }
 
-        public int AñoSemestre { get; set; }
+    public string PeriodoSemestre { get; set; } = null!;
 
-        public char PeriodoSemestre { get; set; }
-
-        public char EstadoSemestre { get; set; }
-    }
-
-
+    public string EstadoSemestre { get; set; } = null!;
 }
-
-
-
-

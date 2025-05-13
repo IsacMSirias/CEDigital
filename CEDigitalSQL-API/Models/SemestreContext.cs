@@ -15,7 +15,10 @@ namespace CEDigitalSQL_API.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Semestre>().HasIndex(c => c.IdSemestre).IsUnique();
+
+            // Primary Key
+            modelBuilder.Entity<Semestre>()
+                .HasKey(s => s.IdSemestre);
 
         }
     }

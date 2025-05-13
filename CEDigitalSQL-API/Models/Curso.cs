@@ -1,18 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace CEDigitalSQL_API.Models
+namespace CEDigitalSQL_API.Models;
+
+public partial class Curso
 {
-    public class Curso
-    {
-        [Key]
-        public int IdCurso { get; set; }
+    [Key]
+    public int IdCurso { get; set; }
 
-        [MaxLength(50, ErrorMessage = "Ingrese un nombre válido")]
-        public string NombreCurso { get; set; } = string.Empty; // Cambiado de null a string.Empty por seguridad
+    public required string NombreCurso { get; set; }
 
-        public int CreditosCurso { get; set; }
+    public int CreditosCurso { get; set; }
 
-        public required string Escuela { get; set; }
-    }
+    public int IdEscuela { get; set; }
 }
-

@@ -10,7 +10,7 @@ namespace CEDigitalSQL_API.Models
 
         public int NumeroGrupo { get; set; }
 
-        public int SemestreID { get; set; }
+        public int IdSemestre { get; set; }
 
         public int IdCurso { get; set; }
     }

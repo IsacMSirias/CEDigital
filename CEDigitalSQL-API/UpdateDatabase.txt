@@ -1,0 +1,8 @@
+# Array de contextos
+$contexts = @("CursoContext", "SemestreContext", "GrupoContext", "EscuelaContext", "EstudianteContext", "ProfesorContext", "NoticiaContext", "RubroContext", "CarpetaContext", "EvaluacionContext", "ArchivoContext", "EntregableContext", "MatriculaContext", "ProfesorGrupoContext"); 
+
+# Actualizar la base de datos para cada contexto (No funca despues de hacer las migraciones por unos conflictos bien fucked up)
+foreach ($ctx in $contexts) { Update-Database -Context $ctx };
+
+# Intento de solucion para quitar lo de Up() y Down() de las migraciones que intentan crear tablas que ya están creadas, pero creadas por el mismo C# lmao no se pone de acuerdo el hombre
+foreach ($ctx in $contexts) { Add-Migration InicialSync -Context $ctx; $lastMigrationFile = Get-ChildItem -Recurse -Filter "*_InicialSync.cs" | Sort-Object LastWriteTime -Descending | Select-Object -First 1; (Get-Content $lastMigrationFile.FullName) -replace '(?s)(protected override void Up\(MigrationBuilder migrationBuilder\)\s*{).*?(})', '$1$2' | Set-Content $lastMigrationFile.FullName; (Get-Content $lastMigrationFile.FullName) -replace '(?s)(protected override void Down\(MigrationBuilder migrationBuilder\)\s*{).*?(})', '$1$2' | Set-Content $lastMigrationFile.FullName; Update-Database -Context $ctx };
