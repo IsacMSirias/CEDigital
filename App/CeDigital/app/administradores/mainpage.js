@@ -1,61 +1,90 @@
-// mainpage.js
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const courses = [
-  { id: '1', name: 'Matemáticas' },
-  { id: '2', name: 'Física' },
-  { id: '3', name: 'Química' },
-  { id: '4', name: 'Historia' },
-  { id: '5', name: 'Programación' },
-];
+const MainPage = () => {
+  const router = useRouter();
 
-const MainPage = ({ onSelectCourse }) => {
-  const handleCoursePress = (courseName) => {
-    onSelectCourse(courseName);
-  };
+  const options = [
+    { label: 'Ver y editar cursos', route: '/administradores/coursespage' },
+    { label: 'Crear semestre', route: '/administradores/semesterspage' },
+    { label: 'Asignar cursos y profesores', route: '/administradores/semesterspage' },
+    { label: 'Matricular estudiantes', route: '/administradores/enrollmentpage' },
+    { label: 'Subir archivo Excel', route: '/administradores/exceluploadpage' },
+    { label: 'Crear estructura de carpetas', route: '/administradores/folderspage' },
+    { label: 'Crear rubros predeterminados', route: '/administradores/rubricspage' },
+  ];
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Cursos</Text>
-      <FlatList
-        data={courses}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.courseItem}
-            onPress={() => handleCoursePress(item.name)}
-          >
-            <Text style={styles.courseText}>{item.name}</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Administrador CEDigital</Text>
+      <Text style={styles.subheader}>¿Qué desea gestionar hoy?</Text>
+
+      <View style={styles.cardContainer}>
+        {options.map((opt, index) => (
+          <TouchableOpacity key={index} style={styles.card} onPress={() => router.push(opt.route)}>
+            <Text style={styles.cardText}>{opt.label}</Text>
           </TouchableOpacity>
-        )}
-      />
-    </View>
+        ))}
+      </View>
+
+      <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
+        <Text style={styles.backButtonText}>Volver al inicio</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#f5f5f5',
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    courseItem: {
-        padding: 15,
-        marginVertical: 8,
-        backgroundColor: '#007bff',
-        borderRadius: 8,
-    },
-    courseText: {
-        color: '#fff',
-        fontSize: 18,
-        textAlign: 'center',
-    },
+  container: {
+    padding: 20,
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginTop: 30,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subheader: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#555',
+  },
+  cardContainer: {
+    width: '100%',
+    gap: 15,
+    marginBottom: 30,
+  },
+  card: {
+    backgroundColor: '#007BFF',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  cardText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  backButton: {
+    marginTop: 20,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#6c757d',
+  },
+  backButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
 
 export default MainPage;
