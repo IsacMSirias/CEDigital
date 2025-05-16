@@ -1,0 +1,101 @@
+[
+  {
+    "ContainingType": "CEDigitalMongo_API.Controllers.EstudianteController",
+    "Method": "Get",
+    "RelativePath": "api/Estudiante",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[CEDigitalMongo_API.Modelos.Estudiante, CEDigitalMongo-API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CEDigitalMongo_API.Controllers.EstudianteController",
+    "Method": "Post",
+    "RelativePath": "api/Estudiante",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "estudiante",
+        "Type": "CEDigitalMongo_API.Modelos.Estudiante",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CEDigitalMongo_API.Controllers.EstudianteController",
+    "Method": "Update",
+    "RelativePath": "api/Estudiante",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "estudiante",
+        "Type": "CEDigitalMongo_API.Modelos.Estudiante",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CEDigitalMongo_API.Controllers.EstudianteController",
+    "Method": "GetById",
+    "RelativePath": "api/Estudiante/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "CEDigitalMongo_API.Modelos.Estudiante",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "CEDigitalMongo_API.Controllers.EstudianteController",
+    "Method": "Delete",
+    "RelativePath": "api/Estudiante/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
