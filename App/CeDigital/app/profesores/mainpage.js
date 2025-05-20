@@ -1,61 +1,69 @@
-// mainpage.js
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const courses = [
-  { id: '1', name: 'Matemáticas' },
-  { id: '2', name: 'Física' },
-  { id: '3', name: 'Química' },
-  { id: '4', name: 'Historia' },
-  { id: '5', name: 'Programación' },
-];
+const MainPage = () => {
+  const router = useRouter();
 
-const MainPage = ({ onSelectCourse }) => {
+  const courses = [
+    { id: '1', name: 'Bases de Datos' },
+    { id: '2', name: 'Programación' },
+    { id: '3', name: 'Sistemas Operativos' },
+  ];
+
   const handleCoursePress = (courseName) => {
-    onSelectCourse(courseName);
+    router.push('/profesores/coursepage');
   };
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('username');
+    router.replace('/login'); // Evita que vuelva a esta vista con "back"
+  };
+
+  const renderCourse = ({ item }) => (
+    <TouchableOpacity style={styles.courseItem} onPress={() => handleCoursePress(item.name)}>
+      <Text style={styles.courseText}>{item.name}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Cursos</Text>
+      <Text style={styles.title}>Cursos Asignados</Text>
       <FlatList
         data={courses}
+        renderItem={renderCourse}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.courseItem}
-            onPress={() => handleCoursePress(item.name)}
-          >
-            <Text style={styles.courseText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
       />
+      <View style={styles.logoutContainer}>
+        <Button title="Cerrar Sesión" onPress={handleLogout} color="#D32F2F" />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#f5f5f5',
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    courseItem: {
-        padding: 15,
-        marginVertical: 8,
-        backgroundColor: '#007bff',
-        borderRadius: 8,
-    },
-    courseText: {
-        color: '#fff',
-        fontSize: 18,
-        textAlign: 'center',
-    },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#F5FCFF',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  courseItem: {
+    padding: 20,
+    marginBottom: 10,
+    backgroundColor: '#DDD',
+    borderRadius: 8,
+  },
+  courseText: {
+    fontSize: 18,
+  },
+  logoutContainer: {
+    marginTop: 30,
+  },
 });
 
 export default MainPage;

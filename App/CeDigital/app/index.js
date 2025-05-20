@@ -1,13 +1,13 @@
 import { Suspense, lazy, useState } from 'react';
+import { Text, View } from 'react-native';
 
 const CoursePage = lazy(() => import('./estudiantes/coursepage'));
-const DocumentsPage = lazy(() => import('./estudiantes/documentspage'));
-const EvaluationsPage = lazy(() => import('./estudiantes/evaluationspage'));
-const GradesReportPage = lazy(() => import('./estudiantes/gradesreportpage'));
-const Login = lazy(() => import('./login'));
-const NewsPage = lazy(() => import('./estudiantes/newspage'));
+const DocumentsPage = lazy(() => import('./estudiantes/documentos'));
+const EvaluationsPage = lazy(() => import('./estudiantes/evaluaciones'));
+const GradesReportPage = lazy(() => import('./estudiantes/notas'));
+const NewsPage = lazy(() => import('./estudiantes/noticias'));
 
-// MainPages por rol
+const Login = lazy(() => import('./login'));
 const MainEstudiante = lazy(() => import('./estudiantes/mainpage'));
 const MainProfesor = lazy(() => import('./profesores/mainpage'));
 const MainAdmin = lazy(() => import('./administradores/mainpage'));
@@ -28,7 +28,13 @@ export default function Page() {
   const goBack = () => setScreen('mainEstudiante'); // default back
 
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
+    <Suspense
+      fallback={
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>Cargando...</Text>
+        </View>
+      }
+    >
       {screen === 'login' && (
         <Login
           onEstudiante={() => setScreen('mainEstudiante')}

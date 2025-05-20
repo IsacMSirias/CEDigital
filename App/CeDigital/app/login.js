@@ -1,10 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-const Login = ({ onEstudiante, onProfesor, onAdmin }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const handleLogin = async () => {
     const trimmedEmail = email.trim().toLowerCase();
@@ -18,29 +27,25 @@ const Login = ({ onEstudiante, onProfesor, onAdmin }) => {
     try {
       await AsyncStorage.setItem('username', trimmedEmail);
 
-      if (trimmedEmail.includes('estudiantec')) {
-        Alert.alert('Éxito', `Bienvenido estudiante: ${email}`);
-        onEstudiante(); // va a estudiantes/mainpage
-      } else if (trimmedEmail.includes('profetec')) {
-        Alert.alert('Éxito', `Bienvenido profesor: ${email}`);
-        onProfesor(); // va a profesores/mainpage
-      } else if (trimmedEmail.includes('admin')) {
-        Alert.alert('Éxito', `Bienvenido administrador: ${email}`);
-        onAdmin(); // va a administrador/mainpage
+      if (trimmedEmail.includes('profetec')) {
+        Alert.alert('Éxito', `Bienvenido profesor: ${trimmedEmail}`);
+        router.replace('/profesores/mainpage');
+      } else if (trimmedEmail.includes('admintec')) {
+        Alert.alert('Éxito', `Bienvenido administrador: ${trimmedEmail}`);
+        router.replace('/administradores/mainpage');
+      } else if (trimmedEmail.includes('estudiantec')) {
+        Alert.alert('Éxito', `Bienvenido estudiante: ${trimmedEmail}`);
+        router.replace('/estudiantes/mainpage');
       } else {
-        Alert.alert('Error', 'Usuario no reconocido.');
+        Alert.alert('Error', 'Correo no reconocido. Asegúrese de usar un dominio válido.');
       }
     } catch (error) {
-      Alert.alert('Error', 'No se pudo guardar el usuario.');
-      console.error(error);
+      Alert.alert('Error', 'Hubo un problema al iniciar sesión.');
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <View style={styles.container}>
       <Text style={styles.title}>Iniciar Sesión</Text>
       <TextInput
         style={styles.input}
@@ -60,7 +65,7 @@ const Login = ({ onEstudiante, onProfesor, onAdmin }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -70,35 +75,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
     width: '100%',
     height: 50,
-    borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderWidth: 1,
     marginBottom: 15,
-    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    borderRadius: 8,
   },
   button: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#007BFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
+    backgroundColor: '#1976D2',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 
