@@ -1,8 +1,20 @@
-// app/administradores/enrollmentpage.js
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, FlatList, Alert } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 
-const EnrollmentPage = ({ onBack }) => {
+const EnrollmentPage = () => {
+  const router = useRouter();
+
   const [courseCode, setCourseCode] = useState('');
   const [group, setGroup] = useState('');
   const [carnet, setCarnet] = useState('');
@@ -10,25 +22,23 @@ const EnrollmentPage = ({ onBack }) => {
 
   const handleAddStudent = () => {
     if (!courseCode || !group || !carnet) {
-      Alert.alert('Error', 'Todos los campos son obligatorios.');
+      Alert.alert('Error', 'Debes completar todos los campos.');
       return;
     }
 
-    setEnrolled(prev => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        courseCode,
-        group,
-        carnet,
-      },
-    ]);
+    const newEntry = {
+      id: enrolled.length + 1,
+      courseCode,
+      group,
+      carnet,
+    };
 
+    setEnrolled([...enrolled, newEntry]);
     setCarnet('');
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Matrícula de Estudiantes</Text>
 
       <TextInput
@@ -50,6 +60,7 @@ const EnrollmentPage = ({ onBack }) => {
         onChangeText={setCarnet}
         keyboardType="numeric"
       />
+
       <Button title="Agregar estudiante" onPress={handleAddStudent} />
 
       <Text style={styles.subtitle}>Estudiantes Matriculados</Text>
@@ -58,26 +69,33 @@ const EnrollmentPage = ({ onBack }) => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.entry}>
-            <Text>{item.carnet} - Curso: {item.courseCode} Grupo: {item.group}</Text>
+            <Text>
+              Carné: {item.carnet} | Curso: {item.courseCode} | Grupo: {item.group}
+            </Text>
           </View>
         )}
       />
 
-      <Button title="Volver" onPress={onBack} />
-    </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push('/administradores/mainpage')}
+      >
+        <Text style={styles.backButtonText}>Volver al panel de administración</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
     gap: 10,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
@@ -86,15 +104,28 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    padding: 8,
-    borderRadius: 5,
-    marginBottom: 5,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 10,
+    backgroundColor: '#fff',
   },
   entry: {
-    backgroundColor: '#e0e0e0',
     padding: 10,
-    borderRadius: 5,
-    marginVertical: 5,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 6,
+    marginBottom: 5,
+  },
+  backButton: {
+    marginTop: 30,
+    padding: 15,
+    backgroundColor: '#6c757d',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

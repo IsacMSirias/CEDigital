@@ -1,33 +1,44 @@
-// app/administradores/folderspage.js
 import { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 
 const defaultFolders = ['Presentaciones', 'Quices', 'Exámenes', 'Proyectos'];
 
-const FoldersPage = ({ onBack }) => {
+const FoldersPage = () => {
+  const router = useRouter();
   const [courseCode, setCourseCode] = useState('');
   const [group, setGroup] = useState('');
   const [folders, setFolders] = useState([]);
 
   const handleCreateStructure = () => {
     if (!courseCode || !group) {
-      Alert.alert('Error', 'Debe ingresar el código del curso y el grupo.');
+      Alert.alert('Error', 'Debes ingresar el código del curso y el grupo.');
       return;
     }
 
-    const createdFolders = defaultFolders.map((name, index) => ({
+    const created = defaultFolders.map((name, index) => ({
       id: index.toString(),
       name,
     }));
 
-    setFolders(createdFolders);
+    setFolders(created);
 
-    Alert.alert('Estructura creada', `Carpetas creadas para ${courseCode} grupo ${group}`);
+    Alert.alert('Estructura creada', `Carpetas para ${courseCode} grupo ${group} generadas.`);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Estructura de Carpetas del Curso</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Estructura de Carpetas</Text>
 
       <TextInput
         placeholder="Código del curso"
@@ -44,49 +55,60 @@ const FoldersPage = ({ onBack }) => {
 
       <Button title="Crear estructura" onPress={handleCreateStructure} />
 
-      <Text style={styles.subtitle}>Carpetas creadas:</Text>
       <FlatList
         data={folders}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.folderItem}>
+          <View style={styles.entry}>
             <Text>{item.name}</Text>
           </View>
         )}
       />
 
-      <Button title="Volver" onPress={onBack} />
-    </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push('/administradores/mainpage')}
+      >
+        <Text style={styles.backButtonText}>Volver al panel de administración</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
     gap: 10,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginTop: 20,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    padding: 8,
-    borderRadius: 5,
+    padding: 10,
+    borderRadius: 6,
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  entry: {
+    padding: 10,
+    backgroundColor: '#eee',
+    borderRadius: 6,
     marginBottom: 5,
   },
-  folderItem: {
-    padding: 10,
-    backgroundColor: '#f2f2f2',
-    marginBottom: 5,
-    borderRadius: 5,
+  backButton: {
+    marginTop: 30,
+    padding: 15,
+    backgroundColor: '#6c757d',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

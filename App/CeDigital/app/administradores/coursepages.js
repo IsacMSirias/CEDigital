@@ -1,11 +1,23 @@
-// app/administradores/coursespage.js
 import { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 
-const CoursesPage = ({ onBack }) => {
+const CoursePages = () => {
+  const router = useRouter();
+
   const [courses, setCourses] = useState([
     { id: '1', code: 'CE3101', name: 'Bases de Datos', credits: 4, career: 'Computadores' },
-    { id: '2', code: 'CE1102', name: 'Circuitos Eléctricos', credits: 3, career: 'Computadores' },
+    { id: '2', code: 'CE4201', name: 'Redes de Computadoras', credits: 3, career: 'Computadores' },
   ]);
 
   const [newCourse, setNewCourse] = useState({
@@ -16,33 +28,48 @@ const CoursesPage = ({ onBack }) => {
   });
 
   const handleAddCourse = () => {
-    if (!newCourse.code || !newCourse.name || !newCourse.credits || !newCourse.career) {
+    const { code, name, credits, career } = newCourse;
+
+    if (!code || !name || !credits || !career) {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
 
-    setCourses(prev => [
-      ...prev,
-      { ...newCourse, id: (prev.length + 1).toString() },
+    const newId = (courses.length + 1).toString();
+
+    setCourses([
+      ...courses,
+      {
+        id: newId,
+        code,
+        name,
+        credits,
+        career,
+      },
     ]);
 
     setNewCourse({ code: '', name: '', credits: '', career: '' });
   };
 
   const handleDisableCourse = (id) => {
-    Alert.alert('Deshabilitado', `Curso con ID ${id} fue deshabilitado (simulado).`);
+    Alert.alert('Curso deshabilitado', `Curso con ID ${id} fue deshabilitado (simulado).`);
+    setCourses(courses.filter((c) => c.id !== id));
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Gestión de Cursos</Text>
 
       <FlatList
         data={courses}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
+        scrollEnabled={false}
+        ListEmptyComponent={<Text>No hay cursos registrados.</Text>}
         renderItem={({ item }) => (
           <View style={styles.courseItem}>
-            <Text>{item.code} - {item.name} ({item.credits} créditos) - {item.career}</Text>
+            <Text style={styles.courseText}>
+              {item.code} - {item.name} ({item.credits} créditos) - {item.career}
+            </Text>
             <TouchableOpacity onPress={() => handleDisableCourse(item.id)}>
               <Text style={styles.disableButton}>Deshabilitar</Text>
             </TouchableOpacity>
@@ -50,7 +77,7 @@ const CoursesPage = ({ onBack }) => {
         )}
       />
 
-      <Text style={styles.subheader}>Agregar Nuevo Curso</Text>
+      <Text style={styles.subtitle}>Agregar nuevo curso</Text>
       <TextInput
         placeholder="Código"
         style={styles.input}
@@ -65,8 +92,8 @@ const CoursesPage = ({ onBack }) => {
       />
       <TextInput
         placeholder="Créditos"
-        style={styles.input}
         keyboardType="numeric"
+        style={styles.input}
         value={newCourse.credits}
         onChangeText={(text) => setNewCourse({ ...newCourse, credits: text })}
       />
@@ -77,45 +104,67 @@ const CoursesPage = ({ onBack }) => {
         onChangeText={(text) => setNewCourse({ ...newCourse, career: text })}
       />
 
-      <Button title="Agregar Curso" onPress={handleAddCourse} />
+      <Button title="Agregar curso" onPress={handleAddCourse} />
 
-      <Button title="Volver" onPress={onBack} />
-    </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push('/administradores/mainpage')}
+      >
+        <Text style={styles.backButtonText}>Volver al panel de administración</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
     gap: 10,
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
   },
-  subheader: {
+  subtitle: {
     fontSize: 18,
     fontWeight: '600',
     marginTop: 20,
   },
-  courseItem: {
-    backgroundColor: '#f0f0f0',
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
     padding: 10,
-    marginBottom: 5,
-    borderRadius: 5,
+    borderRadius: 6,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+  },
+  courseItem: {
+    backgroundColor: '#e0e0e0',
+    padding: 12,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  courseText: {
+    fontSize: 16,
   },
   disableButton: {
     color: 'red',
     marginTop: 5,
   },
-  input: {
-    borderWidth: 1,
-    padding: 8,
-    borderRadius: 5,
-    marginBottom: 5,
+  backButton: {
+    marginTop: 30,
+    padding: 15,
+    backgroundColor: '#6c757d',
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
-export default CoursesPage;
+export default CoursePages;

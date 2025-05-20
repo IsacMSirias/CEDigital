@@ -1,89 +1,64 @@
+// app/administradores/mainpage.js
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+const options = [
+  { id: '1', label: 'Gestión de Cursos', route: '/administradores/coursepages' },
+  { id: '2', label: 'Inicializar Semestre', route: '/administradores/semesterpages' },
+  { id: '3', label: 'Matricular Estudiantes', route: '/administradores/enrollmentpage' },
+  { id: '4', label: 'Crear Carpetas de Documentos', route: '/administradores/folderspage' },
+  { id: '5', label: 'Crear Rubros Predeterminados', route: '/administradores/rubricspage' },
+  { id: '6', label: 'Cargar desde Excel', route: '/administradores/exceluploadpage' },
+];
 
 const MainPage = () => {
   const router = useRouter();
 
-  const options = [
-    { label: 'Ver y editar cursos', route: '/administradores/coursespage' },
-    { label: 'Crear semestre', route: '/administradores/semesterspage' },
-    { label: 'Asignar cursos y profesores', route: '/administradores/semesterspage' },
-    { label: 'Matricular estudiantes', route: '/administradores/enrollmentpage' },
-    { label: 'Subir archivo Excel', route: '/administradores/exceluploadpage' },
-    { label: 'Crear estructura de carpetas', route: '/administradores/folderspage' },
-    { label: 'Crear rubros predeterminados', route: '/administradores/rubricspage' },
-  ];
+  const handleOptionPress = (route) => {
+    router.push(route);
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Administrador CEDigital</Text>
-      <Text style={styles.subheader}>¿Qué desea gestionar hoy?</Text>
-
-      <View style={styles.cardContainer}>
-        {options.map((opt, index) => (
-          <TouchableOpacity key={index} style={styles.card} onPress={() => router.push(opt.route)}>
-            <Text style={styles.cardText}>{opt.label}</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Panel de Administración</Text>
+      <FlatList
+        data={options}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.optionItem}
+            onPress={() => handleOptionPress(item.route)}
+          >
+            <Text style={styles.optionText}>{item.label}</Text>
           </TouchableOpacity>
-        ))}
-      </View>
-
-      <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
-        <Text style={styles.backButtonText}>Volver al inicio</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        )}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f5f5f5',
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 30,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subheader: {
-    fontSize: 18,
     marginBottom: 20,
     textAlign: 'center',
-    color: '#555',
   },
-  cardContainer: {
-    width: '100%',
-    gap: 15,
-    marginBottom: 30,
-  },
-  card: {
-    backgroundColor: '#007BFF',
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  cardText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  backButton: {
-    marginTop: 20,
+  optionItem: {
     padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#6c757d',
+    marginVertical: 8,
+    backgroundColor: '#007bff',
+    borderRadius: 8,
   },
-  backButtonText: {
+  optionText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
 
