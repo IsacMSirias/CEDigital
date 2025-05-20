@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CEDigitalSQL-API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a147985bbd9c5c727608da2527d7a97fe9078cb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e2206258935881f5aa5b10fb283118ea5f950e5")]
 [assembly: System.Reflection.AssemblyProductAttribute("CEDigitalSQL-API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CEDigitalSQL-API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
