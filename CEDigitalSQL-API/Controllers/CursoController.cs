@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CEDigitalSQL_API.Controllers
 {
-    [Route("ced/sql/curso/[controller]")]
+    [Route("ced/sql/[controller]")]
     [ApiController]
     public class CursoController : ControllerBase
     {
