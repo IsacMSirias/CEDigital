@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CEDigitalSQL_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("ced/sql/curso/[controller]")]
     [ApiController]
     public class CursoController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace CEDigitalSQL_API.Controllers
         }
 
         [HttpPost]
-        [Route("crear")]
+        [Route("new")]
         public async Task<ActionResult> CrearCurso(Curso curso)
         {
             await _context.Curso.AddAsync(curso);
@@ -40,7 +40,7 @@ namespace CEDigitalSQL_API.Controllers
         }
 
         [HttpGet]
-        [Route("ver")]
+        [Route("get")]
 
         public async Task<IActionResult> VerCurso(int id)
         {
@@ -52,7 +52,7 @@ namespace CEDigitalSQL_API.Controllers
         }
 
         [HttpPut]
-        [Route("editar")]
+        [Route("edit")]
 
         public async Task<IActionResult> UpdateCurso(int id, Curso curso)
         {
@@ -70,7 +70,7 @@ namespace CEDigitalSQL_API.Controllers
         }
 
         [HttpDelete]
-        [Route("eliminar")]
+        [Route("del")]
 
         public async Task<IActionResult> EliminarCurso(int id)
         {

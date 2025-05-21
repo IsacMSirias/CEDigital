@@ -9,11 +9,35 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<CursoContext>(o =>{o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));});
 
-// Contexto del Semestre para que que SQL lo reconozca
 builder.Services.AddDbContext<SemestreContext>(o => {o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));});
 
-// Contexto del Semestre para que que SQL lo reconozca
 builder.Services.AddDbContext<GrupoContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<EscuelaContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<EstudianteContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<ProfesorContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<NoticiaContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<RubroContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<CarpetaContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<EvaluacionContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<ArchivoContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<EntregableContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<MatriculaContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<ProfesorGrupoContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<SubgrupoContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+builder.Services.AddDbContext<IntegranteSubgrupoContext>(o => { o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

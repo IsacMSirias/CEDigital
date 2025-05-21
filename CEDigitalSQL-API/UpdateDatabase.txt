@@ -1,5 +1,5 @@
 # Array de contextos
-$contexts = @("CursoContext", "SemestreContext", "GrupoContext", "EscuelaContext", "EstudianteContext", "ProfesorContext", "NoticiaContext", "RubroContext", "CarpetaContext", "EvaluacionContext", "ArchivoContext", "EntregableContext", "MatriculaContext", "ProfesorGrupoContext"); 
+$contexts = @("CursoContext", "SemestreContext", "GrupoContext", "EscuelaContext", "EstudianteContext", "ProfesorContext", "NoticiaContext", "RubroContext", "CarpetaContext", "EvaluacionContext", "ArchivoContext", "EntregableContext", "MatriculaContext", "ProfesorGrupoContext", "SubgrupoContext", "IntegranteSubgrupoContext"); 
 
 # Actualizar la base de datos para cada contexto (No funca despues de hacer las migraciones por unos conflictos bien fucked up)
 foreach ($ctx in $contexts) { Update-Database -Context $ctx };
