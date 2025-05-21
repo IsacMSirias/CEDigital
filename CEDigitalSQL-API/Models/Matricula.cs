@@ -6,7 +6,7 @@ namespace CEDigitalSQL_API.Models
 
     public class Matricula
     {
-        public int IdEstudiante { get; set; }
+        public int CarnetEstudiante { get; set; }
         public int IdGrupo { get; set; }
     }
 

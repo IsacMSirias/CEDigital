@@ -16,7 +16,7 @@ namespace CEDigitalSQL_API.Models
             
             // (Super Key)
             modelBuilder.Entity<Matricula>()
-                .HasKey(m => new { m.IdEstudiante, m.IdGrupo });
+                .HasKey(m => new { m.CarnetEstudiante, m.IdGrupo });
 
             // Foreign Keys
             modelBuilder.Entity<Matricula>().
