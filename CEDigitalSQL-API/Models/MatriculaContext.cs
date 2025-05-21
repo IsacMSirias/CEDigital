@@ -22,7 +22,7 @@ namespace CEDigitalSQL_API.Models
             modelBuilder.Entity<Matricula>().
                 HasOne<Estudiante>()
                 .WithMany()
-                .HasForeignKey(e => e.IdEstudiante)
+                .HasForeignKey(e => e.CarnetEstudiante)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Matricula>().
