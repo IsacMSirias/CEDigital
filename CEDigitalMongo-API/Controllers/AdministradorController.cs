@@ -46,7 +46,7 @@ namespace CEDigitalMongo_API.Controllers
         {
             var filter = Builders<Administrador>.Filter.And(
                 Builders<Administrador>.Filter.Eq(a => a.CorreoAdministrador, correo),
-                Builders<Administrador>.Filter.Eq(a => a.PasswordAdministrador, password)
+                Builders<Administrador>.Filter.Eq(a => a.ContraseñaAdministrador, password)
             );
 
             var admin = await _administradores.Find(filter).FirstOrDefaultAsync();

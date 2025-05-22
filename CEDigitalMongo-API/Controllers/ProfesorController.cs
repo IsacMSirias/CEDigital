@@ -46,7 +46,7 @@ namespace CEDigitalMongo_API.Controllers
         {
             var filter = Builders<Profesor>.Filter.And(
                 Builders<Profesor>.Filter.Eq(p => p.CorreoProfesor, correo),
-                Builders<Profesor>.Filter.Eq(p => p.PasswordProfesor, password)
+                Builders<Profesor>.Filter.Eq(p => p.ContraseñaProfesor, password)
             );
 
             var profesor = await _profesores.Find(filter).FirstOrDefaultAsync();

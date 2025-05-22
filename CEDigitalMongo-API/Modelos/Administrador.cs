@@ -12,7 +12,7 @@ namespace CEDigitalMongo_API.Modelos
         [BsonElement("CorreoAdministrador")]
         public string? CorreoAdministrador { get; set; }
 
-        [BsonElement("PasswordAdministrador")]
-        public string? PasswordAdministrador { get; set; }
+        [BsonElement("ContraseñaAdministrador")]
+        public string? ContraseñaAdministrador { get; set; }
     }
 }

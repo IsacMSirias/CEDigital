@@ -13,9 +13,9 @@ namespace CEDigitalMongo_API.Modelos
         public string? NombreProfesor { get; set; }
 
         [BsonElement("CorreoProfesor")]
-        public string CorreoProfesor { get; set; }
+        public string? CorreoProfesor { get; set; }
 
-        [BsonElement("PasswordProfesor")]
-        public string PasswordProfesor { get; set; }
+        [BsonElement("ContraseñaProfesor")]
+        public string? ContraseñaProfesor { get; set; }
     }
 }

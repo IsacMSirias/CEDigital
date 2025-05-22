@@ -15,8 +15,8 @@ namespace CEDigitalMongo_API.Modelos
         [BsonElement("CorreoEstudiante"), BsonRepresentation(BsonType.String)]
         public string? CorreoEstudiante{ get; set; }
 
-        [BsonElement("PasswordEstudiante"), BsonRepresentation(BsonType.String)]
-        public string PasswordEstudiante { get; set; }
+        [BsonElement("ContraseñaEstudiante"), BsonRepresentation(BsonType.String)]
+        public string? ContraseñaEstudiante { get; set; }
 
         [BsonElement("CedulaEstudiante"), BsonRepresentation(BsonType.Int64)]
         public int CedulaEstudiante { get; set; }
