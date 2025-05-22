@@ -1,6 +1,5 @@
 ﻿using CEDigitalMongo_API.Data;
 using CEDigitalMongo_API.Modelos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
@@ -10,62 +9,83 @@ namespace CEDigitalMongo_API.Controllers
     [ApiController]
     public class EstudianteController : ControllerBase
     {
-        private readonly IMongoCollection<Estudiante>? _estudiantes;
+        private readonly IMongoCollection<Estudiante> _estudiantes;
 
         public EstudianteController(MongoDbService mongoDbService)
         {
-            _estudiantes = mongoDbService.Database?.GetCollection<Estudiante>("estudiante");
+            _estudiantes = mongoDbService.Database.GetCollection<Estudiante>("estudiante");
         }
 
-
+        // GET: api/estudiante
         [HttpGet]
-        public async Task<IEnumerable<Estudiante>> Get()
+        public async Task<ActionResult<IEnumerable<Estudiante>>> Get()
         {
-            return await _estudiantes.Find(FilterDefinition<Estudiante>.Empty).ToListAsync();
+            var estudiantes = await _estudiantes.Find(_ => true).ToListAsync();
+            return Ok(estudiantes);
         }
 
-
+        // GET: api/estudiante/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Estudiante?>> GetById(string id)
+        public async Task<ActionResult<Estudiante>> GetById(string id)
         {
-            var filter = Builders<Estudiante>.Filter.Eq(x => x.Id, id);
-            var estudiante = await _estudiantes.Find(filter).FirstOrDefaultAsync();
-            return estudiante is not null ? Ok(estudiante) : NotFound();
+            var estudiante = await _estudiantes.Find(e => e.Id == id).FirstOrDefaultAsync();
+            return estudiante is not null ? Ok(estudiante) : NotFound("Estudiante no encontrado.");
         }
 
+        // POST: api/estudiante
         [HttpPost]
         public async Task<ActionResult> Post(Estudiante estudiante)
         {
-
             await _estudiantes.InsertOneAsync(estudiante);
             return CreatedAtAction(nameof(GetById), new { id = estudiante.Id }, estudiante);
-
         }
 
-        [HttpPut]
+        // POST: api/estudiante/validar
+        [HttpPost("validar")]
+        public async Task<ActionResult<Estudiante>> ValidarEstudiante([FromBody] Estudiante datos)
+        {
+            var filter = Builders<Estudiante>.Filter.And(
+                Builders<Estudiante>.Filter.Eq(e => e.Nombre, datos.Nombre),
+                Builders<Estudiante>.Filter.Eq(e => e.email, datos.email),
+                Builders<Estudiante>.Filter.Eq(e => e.carnet, datos.carnet),
+                Builders<Estudiante>.Filter.Eq(e => e.cedula, datos.cedula)
+            );
 
+            var estudiante = await _estudiantes.Find(filter).FirstOrDefaultAsync();
+
+            if (estudiante == null)
+                return NotFound("Los datos no coinciden con ningún estudiante registrado.");
+
+            return Ok(estudiante);
+        }
+
+        // PUT: api/estudiante/{id}
+        [HttpPut("{id}")]
         public async Task<ActionResult> Update(string id, Estudiante estudiante)
         {
-           var filter = Builders<Estudiante>.Filter.Eq(x => x.Id, id);
-            //var update = Builders<Estudiante>.Update
-            //    .Set(x => x.Nombre, estudiante.Nombre)
-            //    .Set(x => x.email, estudiante.email)
-            //    .Set(x => x.carnet, estudiante.carnet)
-            //    .Set(x => x.cedula, estudiante.cedula);
-            //var result = await _estudiantes.UpdateOneAsync(filter, update);
-            //return result.IsAcknowledged ? NoContent() : NotFound();
+            estudiante.Id = id;
 
-            await _estudiantes.ReplaceOneAsync(filter, estudiante);
-            return Ok();
+            var result = await _estudiantes.ReplaceOneAsync(
+                e => e.Id == id,
+                estudiante
+            );
+
+            if (result.MatchedCount == 0)
+                return NotFound("Estudiante no encontrado.");
+
+            return NoContent();
         }
 
+        // DELETE: api/estudiante/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            var filter = Builders<Estudiante>.Filter.Eq(x => x.Id, id);
+            var result = await _estudiantes.DeleteOneAsync(e => e.Id == id);
 
-            await _estudiantes.DeleteOneAsync(filter);
-            return Ok();
-        }   
+            if (result.DeletedCount == 0)
+                return NotFound("Estudiante no encontrado.");
+
+            return NoContent();
+        }
     }
 }
