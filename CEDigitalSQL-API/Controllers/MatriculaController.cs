@@ -31,29 +31,51 @@ namespace CEDigitalSQL_API.Controllers
         [Route("cursos-estudiante")]
         public async Task<IActionResult> CursosPorEstudiante(int carnet)
         {
+            // Verificar existencia del estudiante
             var estudiante = await _estudianteContext.Estudiante.FindAsync(carnet);
             if (estudiante == null)
                 return NotFound("Estudiante no encontrado.");
 
-            // Paso 1: Obtener todos los IdGrupo del estudiante
+            // Grupos del estudiante desde Matricula
             var gruposIds = await _matriculaContext.Matricula
                 .Where(m => m.CarnetEstudiante == carnet)
                 .Select(m => m.IdGrupo)
                 .ToListAsync();
 
-            // Paso 2: Obtener todos los IdCurso de esos grupos
-            var cursosIds = await _grupoContext.Grupo
+            if (!gruposIds.Any())
+                return Ok(new List<object>());
+
+            // Obtener los grupos desde GrupoContext
+            var grupos = await _grupoContext.Grupo
                 .Where(g => gruposIds.Contains(g.IdGrupo))
-                .Select(g => g.IdCurso)
                 .ToListAsync();
 
-            // Paso 3: Obtener los cursos
+            if (!grupos.Any())
+                return Ok(new List<object>());
+
+            // Obtener los cursos desde CursoContext
+            var cursosIds = grupos.Select(g => g.IdCurso).Distinct().ToList();
+
             var cursos = await _cursoContext.Curso
                 .Where(c => cursosIds.Contains(c.IdCurso))
                 .ToListAsync();
 
-            return Ok(cursos);
+            // Respuesta final
+            var resultado = grupos.Select(grupo =>
+            {
+                var curso = cursos.FirstOrDefault(c => c.IdCurso == grupo.IdCurso);
+                return new
+                {
+                    IdGrupo = grupo.IdGrupo,
+                    NombreCurso = curso?.NombreCurso ?? "Curso no encontrado",
+                    NumeroGrupo = grupo.NumeroGrupo,
+                    IdSemestre = grupo.IdSemestre
+                };
+            }).ToList();
+
+            return Ok(resultado);
         }
+
 
         // POST: ced/sql/matricula/new
         [HttpPost]
