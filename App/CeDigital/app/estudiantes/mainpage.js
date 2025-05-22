@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
   ActivityIndicator,
   Button,
@@ -12,18 +12,18 @@ import {
 } from 'react-native';
 import { API_URL } from '../../utils';
 
-const carnetPrueba = 1;
-
 const MainPage = () => {
   const router = useRouter();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { carnetEstudiante } = useLocalSearchParams();
+
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await fetch(`${API_URL}/ced/sql/Matricula/cursos-estudiante?carnet=${carnetPrueba}`, {
+        const response = await fetch(`${API_URL}/ced/sql/Matricula/cursos-estudiante?carnet=${carnetEstudiante}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });

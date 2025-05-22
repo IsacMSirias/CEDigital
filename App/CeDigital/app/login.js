@@ -9,40 +9,81 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { MONGO_API_URL } from '../utils.js';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState(-1);
   const router = useRouter();
+  const userTypeApiRoutes = ['Administrador', 'Profesor', 'Estudiante'];
+  const userTypeFrontendRoutes = ['administradores', 'profesores', 'estudiantes'];
 
   const handleLogin = async () => {
-    const trimmedEmail = email.trim().toLowerCase();
-    const trimmedPassword = password.trim();
+  const correoLogin = email.trim().toLowerCase();
+  const contraseñaLogin = password.trim();
 
-    if (trimmedEmail === '' || trimmedPassword === '') {
-      Alert.alert('Error', 'Por favor, complete todos los campos.');
-      return;
-    }
+  if (correoLogin === '' || contraseñaLogin === '') {
+    Alert.alert('Error', 'Por favor, complete todos los campos.');
+    return;
+  }
 
-    try {
-      await AsyncStorage.setItem('username', trimmedEmail);
+  // Redirección según tipo de usuario
+  if (correoLogin.includes('profetec')) {
+    setUserType(1);
+  } else if (correoLogin.includes('admintec')) {
+    setUserType(0);
+  } else if (correoLogin.includes('estudiantec')) {
+    setUserType(2);
+  }
 
-      if (trimmedEmail.includes('profetec')) {
-        Alert.alert('Éxito', `Bienvenido profesor: ${trimmedEmail}`);
-        router.replace('/profesores/mainpage');
-      } else if (trimmedEmail.includes('admintec')) {
-        Alert.alert('Éxito', `Bienvenido administrador: ${trimmedEmail}`);
-        router.replace('/administradores/mainpage');
-      } else if (trimmedEmail.includes('estudiantec')) {
-        Alert.alert('Éxito', `Bienvenido estudiante: ${trimmedEmail}`);
-        router.replace('/estudiantes/mainpage');
+  try {
+    if (userType >= 0) {
+      const response = await fetch(
+        `${MONGO_API_URL}/api/${userTypeApiRoutes[userType]}/login?correo=${encodeURIComponent(correoLogin)}&password=${encodeURIComponent(contraseñaLogin)}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data === false) {
+          Alert.alert('Error', 'Correo o contraseña incorrectos.');
+          return;
+        } else {
+          const frotendUrl = `/${userTypeFrontendRoutes[userType]}/mainpage`
+          if (userType == 0) {
+            router.replace({
+            pathname: frotendUrl,
+            params: { idAdministrador: data.idAdministrador }
+            });
+          } else if (userType == 1) {
+            router.replace({
+            pathname: frotendUrl,
+            params: { cedulaProfesor: data.cedulaProfesor }
+            });
+          } else if (userType == 2) {
+            router.replace({
+            pathname: frotendUrl,
+            params: { carnetEstudiante: data.carnetEstudiante }
+            });
+          }
+        }
+
       } else {
         Alert.alert('Error', 'Correo no reconocido. Asegúrese de usar un dominio válido.');
       }
-    } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al iniciar sesión.');
     }
-  };
+
+  } catch (error) {
+    Alert.alert('Error', 'Hubo un problema al iniciar sesión.');
+    console.error(error);
+  }
+  
+};
 
   return (
     <View style={styles.container}>
