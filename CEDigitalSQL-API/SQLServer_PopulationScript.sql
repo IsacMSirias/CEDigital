@@ -11,7 +11,7 @@ VALUES ('Base de Datos', 4, 1);
 
 -- Semestre
 INSERT INTO Semestre (AñoSemestre, PeriodoSemestre, EstadoSemestre)
-VALUES (2025, 'I', 'A');
+VALUES (2025, '1', 'E');
 
 -- Profesor
 INSERT INTO Profesor DEFAULT VALUES;

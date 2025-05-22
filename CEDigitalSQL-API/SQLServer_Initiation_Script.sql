@@ -57,7 +57,7 @@ CREATE TABLE [Escuela] (
 );
 
 CREATE TABLE [Estudiante] (
-    [CarnetEstudiante] int NOT NULL,
+    [CarnetEstudiante] int IDENTITY,
     CONSTRAINT [PK_Estudiante] PRIMARY KEY ([CarnetEstudiante])
 );
 
