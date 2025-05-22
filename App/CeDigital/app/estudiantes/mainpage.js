@@ -35,7 +35,7 @@ const MainPage = () => {
         const cursosRaw = await response.json();
 
         const formattedCourses = cursosRaw.map(curso => ({
-          id: curso.idCurso?.toString() ?? '',
+          id: curso.idGrupo?.toString() ?? '',
           name: curso.nombreCurso ?? 'Sin nombre'
         }));
 
