@@ -7,12 +7,12 @@ namespace CEDigitalMongo_API.Modelos
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public string? IdAdministrador { get; set; }
 
-        [BsonElement("email")]
-        public string? Email { get; set; }
+        [BsonElement("CorreoAdministrador")]
+        public string? CorreoAdministrador { get; set; }
 
-        [BsonElement("password")]
-        public string? Password { get; set; }
+        [BsonElement("PasswordAdministrador")]
+        public string? PasswordAdministrador { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace CEDigitalMongo_API.Controllers
 
         public AdministradorController(MongoDbService mongoDbService)
         {
-            _administradores = mongoDbService.Database.GetCollection<Administrador>("administrador");
+            _administradores = mongoDbService.Database.GetCollection<Administrador>("Administrador");
         }
 
         // GET: api/administrador
@@ -28,7 +28,7 @@ namespace CEDigitalMongo_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Administrador>> GetById(string id)
         {
-            var admin = await _administradores.Find(a => a.Id == id).FirstOrDefaultAsync();
+            var admin = await _administradores.Find(a => a.IdAdministrador == id).FirstOrDefaultAsync();
             return admin is not null ? Ok(admin) : NotFound("Administrador no encontrado.");
         }
 
@@ -37,16 +37,16 @@ namespace CEDigitalMongo_API.Controllers
         public async Task<ActionResult> Post(Administrador admin)
         {
             await _administradores.InsertOneAsync(admin);
-            return CreatedAtAction(nameof(GetById), new { id = admin.Id }, admin);
+            return CreatedAtAction(nameof(GetById), new { id = admin.IdAdministrador }, admin);
         }
 
-        // POST: api/administrador/validar
-        [HttpPost("validar")]
-        public async Task<ActionResult<Administrador>> ValidarAdministrador([FromBody] Administrador datos)
+        // POST: api/administrador/login
+        [HttpPost("login")]
+        public async Task<ActionResult<Administrador>> ValidarAdministrador(string correo, string password)
         {
             var filter = Builders<Administrador>.Filter.And(
-                Builders<Administrador>.Filter.Eq(a => a.Email, datos.Email),
-                Builders<Administrador>.Filter.Eq(a => a.Password, datos.Password)
+                Builders<Administrador>.Filter.Eq(a => a.CorreoAdministrador, correo),
+                Builders<Administrador>.Filter.Eq(a => a.PasswordAdministrador, password)
             );
 
             var admin = await _administradores.Find(filter).FirstOrDefaultAsync();
@@ -61,10 +61,10 @@ namespace CEDigitalMongo_API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(string id, Administrador admin)
         {
-            admin.Id = id;
+            admin.IdAdministrador = id;
 
             var result = await _administradores.ReplaceOneAsync(
-                a => a.Id == id,
+                a => a.IdAdministrador == id,
                 admin
             );
 
@@ -78,7 +78,7 @@ namespace CEDigitalMongo_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            var result = await _administradores.DeleteOneAsync(a => a.Id == id);
+            var result = await _administradores.DeleteOneAsync(a => a.IdAdministrador == id);
 
             if (result.DeletedCount == 0)
                 return NotFound("Administrador no encontrado.");

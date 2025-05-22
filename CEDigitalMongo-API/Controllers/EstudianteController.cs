@@ -13,7 +13,7 @@ namespace CEDigitalMongo_API.Controllers
 
         public EstudianteController(MongoDbService mongoDbService)
         {
-            _estudiantes = mongoDbService.Database.GetCollection<Estudiante>("estudiante");
+            _estudiantes = mongoDbService.Database.GetCollection<Estudiante>("Estudiante");
         }
 
         // GET: api/estudiante
@@ -26,9 +26,9 @@ namespace CEDigitalMongo_API.Controllers
 
         // GET: api/estudiante/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Estudiante>> GetById(string id)
+        public async Task<ActionResult<Estudiante>> GetById(int carnet)
         {
-            var estudiante = await _estudiantes.Find(e => e.Id == id).FirstOrDefaultAsync();
+            var estudiante = await _estudiantes.Find(e => e.CarnetEstudiante == carnet).FirstOrDefaultAsync();
             return estudiante is not null ? Ok(estudiante) : NotFound("Estudiante no encontrado.");
         }
 
@@ -37,38 +37,36 @@ namespace CEDigitalMongo_API.Controllers
         public async Task<ActionResult> Post(Estudiante estudiante)
         {
             await _estudiantes.InsertOneAsync(estudiante);
-            return CreatedAtAction(nameof(GetById), new { id = estudiante.Id }, estudiante);
+            return CreatedAtAction(nameof(GetById), new { id = estudiante.CarnetEstudiante }, estudiante);
         }
 
-        // POST: api/estudiante/validar
-        [HttpPost("validar")]
-        public async Task<ActionResult<Estudiante>> ValidarEstudiante([FromBody] Estudiante datos)
+        // POST: api/estudiante/login
+        [HttpGet("login")]
+        public async Task<ActionResult<Estudiante>> ValidarEstudiante(string correo, string password)
         {
             var filter = Builders<Estudiante>.Filter.And(
-                Builders<Estudiante>.Filter.Eq(e => e.Nombre, datos.Nombre),
-                Builders<Estudiante>.Filter.Eq(e => e.email, datos.email),
-                Builders<Estudiante>.Filter.Eq(e => e.carnet, datos.carnet),
-                Builders<Estudiante>.Filter.Eq(e => e.cedula, datos.cedula)
+                Builders<Estudiante>.Filter.Eq(e => e.CorreoEstudiante, correo),
+                Builders<Estudiante>.Filter.Eq(e => e.ContraseñaEstudiante, password)
             );
 
             var estudiante = await _estudiantes.Find(filter).FirstOrDefaultAsync();
 
             if (estudiante == null)
-                return NotFound("Los datos no coinciden con ningún estudiante registrado.");
+                return NotFound();
 
             return Ok(estudiante);
         }
 
         // PUT: api/estudiante/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, Estudiante estudiante)
+        public async Task<ActionResult> Update(int carnet, Estudiante estudiante)
         {
-            estudiante.Id = id;
+            estudiante.CarnetEstudiante = carnet;
 
             var result = await _estudiantes.ReplaceOneAsync(
-                e => e.Id == id,
+                e => e.CarnetEstudiante == carnet,
                 estudiante
-            );
+            );  
 
             if (result.MatchedCount == 0)
                 return NotFound("Estudiante no encontrado.");
@@ -78,9 +76,9 @@ namespace CEDigitalMongo_API.Controllers
 
         // DELETE: api/estudiante/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(int carnet)
         {
-            var result = await _estudiantes.DeleteOneAsync(e => e.Id == id);
+            var result = await _estudiantes.DeleteOneAsync(e => e.CarnetEstudiante == carnet);
 
             if (result.DeletedCount == 0)
                 return NotFound("Estudiante no encontrado.");

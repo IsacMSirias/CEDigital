@@ -6,22 +6,20 @@ namespace CEDigitalMongo_API.Modelos
     public class Estudiante
     {
         [BsonId]
-        [BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        [BsonElement("CarnetEstudiante"), BsonRepresentation(BsonType.Int32)]
+        public int CarnetEstudiante { get; set; }
 
-        [BsonElement("nombre"), BsonRepresentation(BsonType.String)]
-        public string? Nombre { get; set; }
+        [BsonElement("NombreEstudiante"), BsonRepresentation(BsonType.String)]
+        public string? NombreEstudiante { get; set; }
 
-        [BsonElement("email"), BsonRepresentation(BsonType.String)]
+        [BsonElement("CorreoEstudiante"), BsonRepresentation(BsonType.String)]
+        public string? CorreoEstudiante{ get; set; }
 
-        public string? email { get; set; }
+        [BsonElement("PasswordEstudiante"), BsonRepresentation(BsonType.String)]
+        public string PasswordEstudiante { get; set; }
 
-        [BsonElement("carnet"), BsonRepresentation(BsonType.Int64)]
-
-        public int carnet { get; set; }
-
-        [BsonElement("cedula"), BsonRepresentation(BsonType.Int64)]
-        public int cedula { get; set; }
+        [BsonElement("CedulaEstudiante"), BsonRepresentation(BsonType.Int64)]
+        public int CedulaEstudiante { get; set; }
 
     }
 }

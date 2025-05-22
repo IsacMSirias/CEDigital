@@ -13,7 +13,7 @@ namespace CEDigitalMongo_API.Controllers
 
         public ProfesorController(MongoDbService mongoDbService)
         {
-            _profesores = mongoDbService.Database.GetCollection<Profesor>("profesor");
+            _profesores = mongoDbService.Database.GetCollection<Profesor>("Profesor");
         }
 
         // GET: api/profesor
@@ -26,9 +26,9 @@ namespace CEDigitalMongo_API.Controllers
 
         // GET: api/profesor/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Profesor>> GetById(string id)
+        public async Task<ActionResult<Profesor>> GetById(int cedulaProfesor)
         {
-            var profesor = await _profesores.Find(p => p.Id == id).FirstOrDefaultAsync();
+            var profesor = await _profesores.Find(p => p.CedulaProfesor == cedulaProfesor).FirstOrDefaultAsync();
             return profesor is not null ? Ok(profesor) : NotFound("Profesor no encontrado.");
         }
 
@@ -37,18 +37,16 @@ namespace CEDigitalMongo_API.Controllers
         public async Task<ActionResult> Post(Profesor profesor)
         {
             await _profesores.InsertOneAsync(profesor);
-            return CreatedAtAction(nameof(GetById), new { id = profesor.Id }, profesor);
+            return CreatedAtAction(nameof(GetById), new { id = profesor.CedulaProfesor }, profesor);
         }
 
-        // POST: api/profesor/validar
-        [HttpPost("validar")]
-        public async Task<ActionResult<Profesor>> ValidarProfesor([FromBody] Profesor datos)
+        // POST: api/profesor/login
+        [HttpPost("login")]
+        public async Task<ActionResult<Profesor>> ValidarProfesor(string correo, string password)
         {
             var filter = Builders<Profesor>.Filter.And(
-                Builders<Profesor>.Filter.Eq(p => p.Nombre, datos.Nombre),
-                Builders<Profesor>.Filter.Eq(p => p.Email, datos.Email),
-                Builders<Profesor>.Filter.Eq(p => p.Cedula, datos.Cedula),
-                Builders<Profesor>.Filter.Eq(p => p.Password, datos.Password)
+                Builders<Profesor>.Filter.Eq(p => p.CorreoProfesor, correo),
+                Builders<Profesor>.Filter.Eq(p => p.PasswordProfesor, password)
             );
 
             var profesor = await _profesores.Find(filter).FirstOrDefaultAsync();
@@ -61,12 +59,12 @@ namespace CEDigitalMongo_API.Controllers
 
         // PUT: api/profesor/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, Profesor profesor)
+        public async Task<ActionResult> Update(int cedulaProfesor, Profesor profesor)
         {
-            profesor.Id = id;
+            profesor.CedulaProfesor = cedulaProfesor;
 
             var result = await _profesores.ReplaceOneAsync(
-                p => p.Id == id,
+                p => p.CedulaProfesor == cedulaProfesor,
                 profesor
             );
 
@@ -78,9 +76,9 @@ namespace CEDigitalMongo_API.Controllers
 
         // DELETE: api/profesor/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(int cedulaProfesor)
         {
-            var result = await _profesores.DeleteOneAsync(p => p.Id == id);
+            var result = await _profesores.DeleteOneAsync(p => p.CedulaProfesor == cedulaProfesor);
 
             if (result.DeletedCount == 0)
                 return NotFound("Profesor no encontrado.");

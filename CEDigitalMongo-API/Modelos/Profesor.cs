@@ -6,19 +6,16 @@ namespace CEDigitalMongo_API.Modelos
     public class Profesor
     {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        [BsonElement("CedulaProfesor")]
+        public long CedulaProfesor { get; set; }
 
-        [BsonElement("nombreProfesor")]
-        public string? Nombre { get; set; }
+        [BsonElement("NombreProfesor")]
+        public string? NombreProfesor { get; set; }
 
-        [BsonElement("correoProfesor")]
-        public string? Email { get; set; }
+        [BsonElement("CorreoProfesor")]
+        public string CorreoProfesor { get; set; }
 
-        [BsonElement("cedula")]
-        public long Cedula { get; set; }
-
-        [BsonElement("password")]
-        public string? Password { get; set; }
+        [BsonElement("PasswordProfesor")]
+        public string PasswordProfesor { get; set; }
     }
 }
