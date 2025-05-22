@@ -9,7 +9,7 @@ namespace CEDigitalSQL_API.Models
         [Key]
         public int IdEvaluacion { get; set; }
 
-        public byte[]? EspecificacionEvaluacion { get; set; }
+        public byte[] EspecificacionEvaluacion { get; set; }
 
         public required string NombreEvaluacion { get; set; }
 

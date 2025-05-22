@@ -10,7 +10,7 @@ namespace CEDigitalSQL_API.Models
 
         public int NotaEntregable { get; set; }
 
-        public string? ObservacionesEntregable { get; set; }
+        public string ObservacionesEntregable { get; set; }
 
         public int IdArchivoDesglose { get; set; }
 

@@ -14,9 +14,9 @@ namespace CEDigitalSQL_API.Models
 
         public required int TamañoArchivo { get; set; }
 
-        public int? CarnetEstudiante { get; set; }
+        public int CarnetEstudiante { get; set; }
 
-        public int? CedulaProfesor { get; set; }
+        public int CedulaProfesor { get; set; }
 
         public required int IdCarpeta { get; set; }
     }

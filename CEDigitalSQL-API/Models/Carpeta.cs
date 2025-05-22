@@ -10,7 +10,7 @@ namespace CEDigitalSQL_API.Models
 
         public required string RutaCarpeta { get; set; }
 
-        public int? CedulaProfesor { get; set; }
+        public int CedulaProfesor { get; set; }
 
         public required int IdGrupo { get; set; }
     }
