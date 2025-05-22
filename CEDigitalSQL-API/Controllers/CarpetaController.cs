@@ -8,30 +8,47 @@ namespace CEDigitalSQL_API.Controllers
     [ApiController]
     public class CarpetaController : ControllerBase
     {
-        private readonly DbContext _grupoContext;
-        private readonly DbContext _carpetaContext;
+        private readonly GrupoContext _grupoContext;
+        private readonly CarpetaContext _carpetaContext;
 
-        public CarpetaController(DbContext grupoContext, DbContext carpetaContext)
+        public CarpetaController(GrupoContext grupoContext, CarpetaContext carpetaContext)
         {
             _grupoContext = grupoContext;
             _carpetaContext = carpetaContext;
         }
 
+        // GET: ced/sql/carpeta/contenidos?idGrupo=1
         [HttpGet]
         [Route("contenidos")]
-
         public async Task<IActionResult> ObtenerContenidosPorGrupo(int idGrupo)
         {
-            var grupo = await _grupoContext.Set<Grupo>().FindAsync(idGrupo);
+            var grupo = await _grupoContext.Grupo.FindAsync(idGrupo);
 
             if (grupo == null)
                 return NotFound("Grupo no encontrado.");
 
-            var carpetas = await _carpetaContext.Set<Carpeta>()
+            var carpetas = await _carpetaContext.Carpeta
                 .Where(c => c.IdGrupo == idGrupo)
                 .ToListAsync();
 
             return Ok(carpetas);
+        }
+
+        // POST: ced/sql/carpeta/new
+        [HttpPost]
+        [Route("new")]
+        public async Task<IActionResult> CrearCarpeta([FromBody] Carpeta carpeta)
+        {
+            var grupoExiste = await _grupoContext.Grupo
+                .AnyAsync(g => g.IdGrupo == carpeta.IdGrupo);
+
+            if (!grupoExiste)
+                return NotFound("Grupo no encontrado.");
+
+            await _carpetaContext.Carpeta.AddAsync(carpeta);
+            await _carpetaContext.SaveChangesAsync();
+
+            return Ok("Carpeta creada correctamente.");
         }
     }
 }
