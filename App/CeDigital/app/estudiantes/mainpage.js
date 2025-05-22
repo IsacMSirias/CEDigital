@@ -1,17 +1,54 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { API_URL } from '../../utils';
 
-const courses = [
-  { id: '1', name: 'Matemáticas' },
-  { id: '2', name: 'Física' },
-  { id: '3', name: 'Química' },
-  { id: '4', name: 'Historia' },
-  { id: '5', name: 'Programación' },
-];
+const carnetPrueba = 1;
 
 const MainPage = () => {
   const router = useRouter();
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/ced/Matricula/cursos-estudiante?carnet=${carnetPrueba}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - ${await response.text()}`);
+        }
+
+        const cursosRaw = await response.json();
+
+        const formattedCourses = cursosRaw.map(curso => ({
+          id: curso.idCurso?.toString() ?? '',
+          name: curso.nombre ?? 'Sin nombre'
+        }));
+
+        setCourses(formattedCourses);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCursos();
+  }, []);
 
   const handleCoursePress = (courseName) => {
     router.push('/estudiantes/coursepage');
@@ -25,18 +62,25 @@ const MainPage = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Cursos Matriculados</Text>
-      <FlatList
-        data={courses}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.courseItem}
-            onPress={() => handleCoursePress(item.name)}
-          >
-            <Text style={styles.courseText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
+
+      {loading && <ActivityIndicator size="large" color="#1976D2" />}
+      {error && <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>}
+
+      {!loading && !error && (
+        <FlatList
+          data={courses}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.courseItem}
+              onPress={() => handleCoursePress(item.name)}
+            >
+              <Text style={styles.courseText}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      )}
+
       <View style={styles.logoutContainer}>
         <Button title="Cerrar Sesión" onPress={handleLogout} color="#D32F2F" />
       </View>
