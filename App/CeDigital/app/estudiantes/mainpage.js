@@ -23,7 +23,7 @@ const MainPage = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/ced/Matricula/cursos-estudiante?carnet=${carnetPrueba}`, {
+        const response = await fetch(`${API_URL}/ced/sql/Matricula/cursos-estudiante?carnet=${carnetPrueba}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -36,7 +36,7 @@ const MainPage = () => {
 
         const formattedCourses = cursosRaw.map(curso => ({
           id: curso.idCurso?.toString() ?? '',
-          name: curso.nombre ?? 'Sin nombre'
+          name: curso.nombreCurso ?? 'Sin nombre'
         }));
 
         setCourses(formattedCourses);
