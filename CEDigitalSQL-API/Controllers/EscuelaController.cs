@@ -6,32 +6,89 @@ namespace CEDigitalSQL_API.Controllers
 {
     [Route("ced/sql/[controller]")]
     [ApiController]
-    public class CarpetaController : ControllerBase
+    public class EscuelaController : ControllerBase
     {
-        private readonly DbContext _grupoContext;
-        private readonly DbContext _carpetaContext;
+        private readonly EscuelaContext _escuelaContext;
+        private readonly CursoContext _cursoContext;
 
-        public CarpetaController(DbContext grupoContext, DbContext carpetaContext)
+        public EscuelaController(EscuelaContext escuelaContext, CursoContext cursoContext)
         {
-            _grupoContext = grupoContext;
-            _carpetaContext = carpetaContext;
+            _escuelaContext = escuelaContext;
+            _cursoContext = cursoContext;
         }
 
-        [HttpGet]
-        [Route("contenidos")]
-
-        public async Task<IActionResult> ObtenerContenidosPorGrupo(int idGrupo)
+        // POST: ced/sql/escuela/new
+        [HttpPost]
+        [Route("new")]
+        public async Task<IActionResult> CrearEscuela(Escuela escuela)
         {
-            var grupo = await _grupoContext.Set<Grupo>().FindAsync(idGrupo);
+            await _escuelaContext.Escuela.AddAsync(escuela);
+            await _escuelaContext.SaveChangesAsync();
+            return Ok();
+        }
 
-            if (grupo == null)
-                return NotFound("Grupo no encontrado.");
+        // GET: ced/sql/escuela/list
+        [HttpGet]
+        [Route("list")]
+        public async Task<ActionResult<IEnumerable<Escuela>>> ListarEscuelas()
+        {
+            var escuelas = await _escuelaContext.Escuela.ToListAsync();
+            return Ok(escuelas);
+        }
 
-            var carpetas = await _carpetaContext.Set<Carpeta>()
-                .Where(c => c.IdGrupo == idGrupo)
+        // GET: ced/sql/escuela/get?id=1
+        [HttpGet]
+        [Route("get")]
+        public async Task<IActionResult> VerEscuela(int id)
+        {
+            var escuela = await _escuelaContext.Escuela.FindAsync(id);
+            return escuela is not null ? Ok(escuela) : NotFound();
+        }
+
+        // PUT: ced/sql/escuela/edit
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> EditarEscuela(int id, Escuela actualizada)
+        {
+            var escuela = await _escuelaContext.Escuela.FindAsync(id);
+            if (escuela == null)
+                return NotFound();
+
+            escuela.NombreEscuela = actualizada.NombreEscuela;
+            escuela.CodigoEscuela = actualizada.CodigoEscuela;
+
+            await _escuelaContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        // DELETE: ced/sql/escuela/del?id=1
+        [HttpDelete]
+        [Route("del")]
+        public async Task<IActionResult> EliminarEscuela(int id)
+        {
+            var escuela = await _escuelaContext.Escuela.FindAsync(id);
+            if (escuela == null)
+                return NotFound();
+
+            _escuelaContext.Escuela.Remove(escuela);
+            await _escuelaContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        // GET: ced/sql/escuela/cursos?idEscuela=1
+        [HttpGet]
+        [Route("cursos")]
+        public async Task<IActionResult> VerCursosPorEscuela(int idEscuela)
+        {
+            var escuelaExiste = await _escuelaContext.Escuela.AnyAsync(e => e.IdEscuela == idEscuela);
+            if (!escuelaExiste)
+                return NotFound("Escuela no encontrada.");
+
+            var cursos = await _cursoContext.Curso
+                .Where(c => c.IdEscuela == idEscuela)
                 .ToListAsync();
 
-            return Ok(carpetas);
+            return Ok(cursos);
         }
     }
 }
