@@ -35,16 +35,21 @@ namespace CEDigitalSQL_API.Controllers
             if (estudiante == null)
                 return NotFound("Estudiante no encontrado.");
 
-            var cursos = await _matriculaContext.Matricula
+            // Paso 1: Obtener todos los IdGrupo del estudiante
+            var gruposIds = await _matriculaContext.Matricula
                 .Where(m => m.CarnetEstudiante == carnet)
-                .Join(_grupoContext.Grupo,
-                      matricula => matricula.IdGrupo,
-                      grupo => grupo.IdGrupo,
-                      (matricula, grupo) => grupo.IdCurso)
-                .Join(_cursoContext.Curso,
-                      idCurso => idCurso,
-                      curso => curso.IdCurso,
-                      (idCurso, curso) => curso)
+                .Select(m => m.IdGrupo)
+                .ToListAsync();
+
+            // Paso 2: Obtener todos los IdCurso de esos grupos
+            var cursosIds = await _grupoContext.Grupo
+                .Where(g => gruposIds.Contains(g.IdGrupo))
+                .Select(g => g.IdCurso)
+                .ToListAsync();
+
+            // Paso 3: Obtener los cursos
+            var cursos = await _cursoContext.Curso
+                .Where(c => cursosIds.Contains(c.IdCurso))
                 .ToListAsync();
 
             return Ok(cursos);

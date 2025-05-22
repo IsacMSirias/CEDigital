@@ -26,7 +26,7 @@ namespace CEDigitalSQL_API.Controllers
             await _context.Estudiante.AddAsync(estudiante);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new { id = estudiante.CarnetEstudiante });
         }
 
         [HttpGet]
