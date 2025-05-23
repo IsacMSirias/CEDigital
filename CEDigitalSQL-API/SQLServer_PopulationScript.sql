@@ -1,68 +1,82 @@
 USE [CEDigital];
 GO
 
--- Escuela
-INSERT INTO Escuela (CodigoEscuela, NombreEscuela)
-VALUES ('CS', 'Escuela de Ciencias de la Computación');
+-- Escuelas
+INSERT INTO Escuela (CodigoEscuela, NombreEscuela) VALUES
+('CE', 'Escuela de Computer Engineering'),
+('EL', 'Escuela de Electrónica');
 
--- Curso
-INSERT INTO Curso (NombreCurso, CreditosCurso, IdEscuela)
-VALUES ('Base de Datos', 4, 1);
+-- Cursos
+INSERT INTO Curso (NombreCurso, CreditosCurso, IdEscuela) VALUES
+('Bases de Datos', 4, 1),
+('Circuitos Electricos En Corriente Continua', 4, 2),
+('Laboratorio De Circuitos Electricos', 1, 1);
 
--- Semestre
-INSERT INTO Semestre (AñoSemestre, PeriodoSemestre, EstadoSemestre)
-VALUES (2025, '1', 'E');
+-- Semestres
+INSERT INTO Semestre (AñoSemestre, PeriodoSemestre, EstadoSemestre) VALUES
+(2025, '1', 'C'),
+(2025, '2', 'E');
 
--- Profesor
-INSERT INTO Profesor DEFAULT VALUES;
+-- Profesores
+INSERT INTO Profesor(CedulaProfesor) VALUES (303420140);
+INSERT INTO Profesor(CedulaProfesor) VALUES (101240423);
 
--- Estudiante
-INSERT INTO Estudiante DEFAULT VALUES;
-INSERT INTO Estudiante DEFAULT VALUES; -- Uno extra para pruebas grupales
+-- Estudiantes
+INSERT INTO Estudiante DEFAULT VALUES; -- 1
+INSERT INTO Estudiante DEFAULT VALUES; -- 2
 
--- Grupo
-INSERT INTO Grupo (NumeroGrupo, IdSemestre, IdCurso)
-VALUES (1, 1, 1);
+-- Grupos
+INSERT INTO Grupo (NumeroGrupo, IdSemestre, IdCurso) VALUES
+(1, 1, 1),
+(1, 1, 2),
+(2, 2, 3);
 
 -- ProfesorGrupo
-INSERT INTO ProfesorGrupo (CedulaProfesor, IdGrupo)
-VALUES (1, 1);
+INSERT INTO ProfesorGrupo (CedulaProfesor, IdGrupo) VALUES
+(303420140, 1),
+(101240423, 3);
 
 -- Matricula
-INSERT INTO Matricula (CarnetEstudiante, IdGrupo)
-VALUES (1, 1),
-       (2, 1);
+INSERT INTO Matricula (CarnetEstudiante, IdGrupo) VALUES
+(1, 1), (2, 1),
+(2, 3);
 
--- Carpeta
-INSERT INTO Carpeta (RutaCarpeta, CedulaProfesor, IdGrupo)
-VALUES ('/Entregas/BD/Grupo1', 1, 1);
+-- Carpetas
+INSERT INTO Carpeta (RutaCarpeta, CedulaProfesor, IdGrupo) VALUES
+('Presentaciones', NULL, 1),
+('Quices', NULL, 1),
+('Examenes', NULL, 1),
+('Proyectos', NULL, 1);
 
--- Rubro
-INSERT INTO Rubro (NombreRubro, PorcentajeRubro, IdGrupo)
-VALUES ('Proyecto Final', 40, 1);
+-- Rubros
+INSERT INTO Rubro (NombreRubro, PorcentajeRubro, IdGrupo) VALUES
+('Quices', 30, 1),
+('Examenes', 30, 1),
+('Proyectos', 40, 1);
 
--- Evaluación
-INSERT INTO Evaluacion (NombreEvaluacion, PesoEvaluacion, IdRubro)
-VALUES ('Entrega 1', 40, 1);
+-- Evaluaciones
+INSERT INTO Evaluacion (NombreEvaluacion, PesoEvaluacion, IdRubro) VALUES
+('Parcial 1', 50, 2),
+('Parcial 2', 50, 2),
+('Quiz 1', 25, 1),
+('Quiz 2', 25, 1),
+('Quiz 3', 25, 1),
+('Quiz 4', 25, 1),
+('Proyecto Semestral', 100, 3);
 
--- Subgrupo
-INSERT INTO Subgrupo (NombreSubgrupo, IdEvaluacion, IdGrupo)
-VALUES ('Equipo A', 1, 1);
+-- Archivos
+INSERT INTO Archivo (ContenidoArchivo, TamañoArchivo, CarnetEstudiante, CedulaProfesor, IdCarpeta) VALUES
+(0x, 1000, NULL, NULL, 1),
+(0x, 1200, NULL, NULL, 1),
+(0x, 800, NULL, 303420140, 1),
+(0x, 1600, 1, NULL, NULL);
 
--- IntegranteSubgrupos
-INSERT INTO IntegranteSubgrupos (IdSubgrupo, CarnetEstudiante)
-VALUES (1, 1),
-       (1, 2);
+-- Entregables
+INSERT INTO Entregable (NotaEntregable, ObservacionesEntregable, IdArchivoDesglose, IdArchivoEntrega, IdEvaluacion, CarnetEstudiante) VALUES
+(90, 'Buen trabajo', NULL, NULL, 3, 1),
+(85, 'Completo', NULL, NULL, 3, 2);
 
--- Archivo
-INSERT INTO Archivo (ContenidoArchivo, TamañoArchivo, CarnetEstudiante, CedulaProfesor, IdCarpeta)
-VALUES (0x, 1024, 1, 1, 1);
-
--- Entregable
-INSERT INTO Entregable (NotaEntregable, ObservacionesEntregable, IdArchivoDesglose, IdArchivoEntrega, IdEvaluacion)
-VALUES (85, 'Entrega aceptable', 1, 1, 1);
-
--- Noticia
-INSERT INTO Noticia (TituloNoticia, MensajeNoticia, CedulaProfesor, IdGrupo)
-VALUES ('Bienvenida', 'Bienvenidos al curso de BD', 1, 1);
+-- Noticias
+INSERT INTO Noticia (TituloNoticia, MensajeNoticia, CedulaProfesor, IdGrupo) VALUES
+('Bienvenida', '¡Bienvenidos al curso de BD!', 303420140, 1);
 GO

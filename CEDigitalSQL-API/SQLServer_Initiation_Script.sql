@@ -41,7 +41,7 @@ CREATE TABLE [Curso] (
 
 CREATE TABLE [Entregable] (
     [IdEntregable] int NOT NULL IDENTITY,
-    [NotaEntregable] float DEFAULT 0 NOT NULL,
+    [NotaEntregable] int DEFAULT 0 NOT NULL,
     [ObservacionesEntregable] nvarchar(100) DEFAULT 'N/A' NOT NULL,
     [IdArchivoDesglose] int DEFAULT NULL,
     [IdArchivoEntrega] int DEFAULT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE [Entregable] (
 
 CREATE TABLE [Escuela] (
     [IdEscuela] int NOT NULL IDENTITY,
-    [CodigoEscuela] nvarchar(100) NOT NULL,
+    [CodigoEscuela] nvarchar(3) NOT NULL,
     [NombreEscuela] nvarchar(100) NOT NULL,
     CONSTRAINT [PK_Escuela] PRIMARY KEY ([IdEscuela])
 );
@@ -105,7 +105,7 @@ CREATE TABLE [Noticia] (
 );
 
 CREATE TABLE [Profesor] (
-    [CedulaProfesor] int NOT NULL IDENTITY,
+    [CedulaProfesor] int NOT NULL,
     CONSTRAINT [PK_Profesor] PRIMARY KEY ([CedulaProfesor])
 );
 
