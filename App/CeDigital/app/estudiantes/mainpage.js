@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
   ActivityIndicator,
   Button,
@@ -17,13 +17,19 @@ const MainPage = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const { carnetEstudiante } = useLocalSearchParams();
+  const [carnet, setCarnet] = useState(null);
 
   useEffect(() => {
-    const fetchCursos = async () => {
+    const initialize = async () => {
       try {
-        const response = await fetch(`${API_URL}/ced/sql/Matricula/cursos-estudiante?carnet=${carnetEstudiante}`, {
+        const storedCarnet = await AsyncStorage.getItem('carnetEstudiante');
+        if (!storedCarnet) {
+          throw new Error('Carnet de estudiante no encontrado');
+        }
+
+        setCarnet(storedCarnet);
+
+        const response = await fetch(`${API_URL}/ced/sql/Matricula/cursos-estudiante?carnet=${storedCarnet}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -47,15 +53,21 @@ const MainPage = () => {
       }
     };
 
-    fetchCursos();
+    initialize();
   }, []);
 
-  const handleCoursePress = (courseName) => {
-    router.push('/estudiantes/coursepage');
+  const handleCoursePress = async (courseId) => {
+    try {
+      // ✅ Corregido: guarda como "idGrupo" (antes "grupoId")
+      await AsyncStorage.setItem('idGrupo', courseId);
+      router.push('/estudiantes/coursepage');
+    } catch (err) {
+      console.error('Error guardando el ID del grupo:', err);
+    }
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('username');
+    await AsyncStorage.multiRemove(['username', 'carnetEstudiante', 'idGrupo']);
     router.replace('/login');
   };
 
@@ -73,7 +85,7 @@ const MainPage = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.courseItem}
-              onPress={() => handleCoursePress(item.name)}
+              onPress={() => handleCoursePress(item.id)}
             >
               <Text style={styles.courseText}>{item.name}</Text>
             </TouchableOpacity>
