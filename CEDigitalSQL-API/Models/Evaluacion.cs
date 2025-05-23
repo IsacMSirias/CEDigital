@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace CEDigitalSQL_API.Models
 {
-
     public class Evaluacion
     {
         [Key]
@@ -19,14 +17,9 @@ namespace CEDigitalSQL_API.Models
 
         public bool EsGrupalEvaluacion { get; set; }
 
-        public DateTime LimiteEntregaEvaluacion { get; set; }
+        // ✅ Cambiado de DateTime a DateTime? para aceptar NULL
+        public DateTime? LimiteEntregaEvaluacion { get; set; }
 
         public required int IdRubro { get; set; }
     }
-
-
 }
-
-
-
-

@@ -1,43 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CEDigitalSQL_API.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace CEDigitalSQL_API.Models
+public class GrupoContext : DbContext
 {
+    public GrupoContext(DbContextOptions<GrupoContext> options) : base(options) { }
 
-    public class GrupoContext : DbContext
+    public DbSet<Grupo> Grupo { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public GrupoContext(DbContextOptions<GrupoContext> options) : base(options)
-        {
-        }
-       
+        base.OnModelCreating(modelBuilder);
 
-        public DbSet<Grupo> Grupo { get; set; }
+        modelBuilder.Entity<Grupo>()
+            .HasKey(g => g.IdGrupo);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Grupo>()
+            .HasOne<Semestre>()
+            .WithMany()
+            .HasForeignKey(s => s.IdSemestre)
+            .OnDelete(DeleteBehavior.Restrict);
 
-            // Primary Key
-            modelBuilder.Entity<Grupo>()
-                .HasKey(g => g.IdGrupo);
-
-            // Foreign Keys
-            modelBuilder.Entity<Grupo>()
-                .HasOne<Semestre>()
-                .WithMany()
-                .HasForeignKey(s => s.IdSemestre)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Grupo>()
-                .HasOne<Curso>()
-                .WithMany()
-                .HasForeignKey(c => c.IdCurso)
-                .OnDelete(DeleteBehavior.Restrict);
-
-        }
+        modelBuilder.Entity<Grupo>()
+            .HasOne<Curso>()
+            .WithMany()
+            .HasForeignKey(c => c.IdCurso)
+            .OnDelete(DeleteBehavior.Restrict);
     }
-
-
 }
-
-
-

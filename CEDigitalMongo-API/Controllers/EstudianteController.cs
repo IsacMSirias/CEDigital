@@ -17,7 +17,7 @@ namespace CEDigitalMongo_API.Controllers
         }
 
         // GET: api/estudiante
-        [HttpGet]
+        [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<Estudiante>>> Get()
         {
             var estudiantes = await _estudiantes.Find(_ => true).ToListAsync();
@@ -25,11 +25,18 @@ namespace CEDigitalMongo_API.Controllers
         }
 
         // GET: api/estudiante/{id}
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<ActionResult<Estudiante>> GetById(int carnet)
         {
             var estudiante = await _estudiantes.Find(e => e.CarnetEstudiante == carnet).FirstOrDefaultAsync();
-            return estudiante is not null ? Ok(estudiante) : NotFound("Estudiante no encontrado.");
+            return estudiante is not null ? Ok(new
+            {
+                carnetEstudiante = estudiante.CarnetEstudiante,
+                cedulaEstudiante = estudiante.CedulaEstudiante,
+                nombreEstudiante = estudiante.NombreEstudiante,
+                correoEstudiante = estudiante.CorreoEstudiante,
+                telefonoEstudiante = estudiante.TelefonoEstudiante
+            }) : NotFound("Estudiante no encontrado.");
         }
 
         // POST: api/estudiante
@@ -58,7 +65,7 @@ namespace CEDigitalMongo_API.Controllers
         }
 
         // PUT: api/estudiante/{id}
-        [HttpPut("{id}")]
+        [HttpPut("edit")]
         public async Task<ActionResult> Update(int carnet, Estudiante estudiante)
         {
             estudiante.CarnetEstudiante = carnet;
@@ -75,7 +82,7 @@ namespace CEDigitalMongo_API.Controllers
         }
 
         // DELETE: api/estudiante/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<ActionResult> Delete(int carnet)
         {
             var result = await _estudiantes.DeleteOneAsync(e => e.CarnetEstudiante == carnet);

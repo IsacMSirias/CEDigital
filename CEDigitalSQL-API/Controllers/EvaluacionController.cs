@@ -28,7 +28,7 @@ namespace CEDigitalSQL_API.Controllers
             await _evaluacionContext.Evaluacion.AddAsync(evaluacion);
             await _evaluacionContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new { message = "Evaluación creada exitosamente." });
         }
 
         [HttpGet]
@@ -41,6 +41,16 @@ namespace CEDigitalSQL_API.Controllers
 
             var evaluaciones = await _evaluacionContext.Evaluacion
                 .Where(e => e.IdRubro == idRubro)
+                .Select(e => new
+                {
+                    idEvaluacion = e.IdEvaluacion,
+                    nombreEvaluacion = e.NombreEvaluacion,
+                    pesoEvaluacion = e.PesoEvaluacion,
+                    estadoNotas = e.EstadoNotas,
+                    esGrupalEvaluacion = e.EsGrupalEvaluacion,
+                    limiteEntregaEvaluacion = e.LimiteEntregaEvaluacion, // nullable ok
+                    idRubro = e.IdRubro
+                })
                 .ToListAsync();
 
             return Ok(evaluaciones);
@@ -50,7 +60,20 @@ namespace CEDigitalSQL_API.Controllers
         [Route("get")]
         public async Task<IActionResult> VerEvaluacion(int id)
         {
-            var evaluacion = await _evaluacionContext.Evaluacion.FindAsync(id);
+            var evaluacion = await _evaluacionContext.Evaluacion
+                .Where(e => e.IdEvaluacion == id)
+                .Select(e => new
+                {
+                    idEvaluacion = e.IdEvaluacion,
+                    nombreEvaluacion = e.NombreEvaluacion,
+                    pesoEvaluacion = e.PesoEvaluacion,
+                    estadoNotas = e.EstadoNotas,
+                    esGrupalEvaluacion = e.EsGrupalEvaluacion,
+                    limiteEntregaEvaluacion = e.LimiteEntregaEvaluacion,
+                    idRubro = e.IdRubro
+                })
+                .FirstOrDefaultAsync();
+
             if (evaluacion == null)
                 return NotFound();
 
@@ -65,7 +88,6 @@ namespace CEDigitalSQL_API.Controllers
             if (evaluacion == null)
                 return NotFound();
 
-            // Actualizar campos
             evaluacion.NombreEvaluacion = actualizada.NombreEvaluacion;
             evaluacion.PesoEvaluacion = actualizada.PesoEvaluacion;
             evaluacion.EspecificacionEvaluacion = actualizada.EspecificacionEvaluacion;
@@ -75,7 +97,7 @@ namespace CEDigitalSQL_API.Controllers
             evaluacion.IdRubro = actualizada.IdRubro;
 
             await _evaluacionContext.SaveChangesAsync();
-            return Ok();
+            return Ok(new { message = "Evaluación actualizada exitosamente." });
         }
 
         [HttpDelete]
@@ -89,7 +111,7 @@ namespace CEDigitalSQL_API.Controllers
             _evaluacionContext.Evaluacion.Remove(evaluacion);
             await _evaluacionContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new { message = "Evaluación eliminada exitosamente." });
         }
     }
 }

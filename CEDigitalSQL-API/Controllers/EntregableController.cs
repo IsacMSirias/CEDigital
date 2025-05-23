@@ -76,7 +76,7 @@ namespace CEDigitalSQL_API.Controllers
         }
 
         [HttpGet]
-        [Route("stufent-eval")]
+        [Route("student-eval")]
         public async Task<IActionResult> ObtenerEntregablePorEstudianteYEvaluacion(int carnet, int evaluacion)
         {
             var entregable = await _entregableContext.Entregable
@@ -87,6 +87,32 @@ namespace CEDigitalSQL_API.Controllers
 
             return Ok(entregable);
         }
+
+        [HttpPut]
+        [Route("set-nota")]
+        public async Task<IActionResult> AsignarNota(int id, int notaEntregable, string? observacionesEntregable)
+        {
+            var entregable = await _entregableContext.Entregable.FindAsync(id);
+            if (entregable == null)
+                return NotFound("Entregable no encontrado.");
+
+            try
+            {
+                entregable.NotaEntregable = notaEntregable;
+                if (!(observacionesEntregable is null))
+                {
+                    entregable.ObservacionesEntregable = observacionesEntregable;
+                }
+
+                await _entregableContext.SaveChangesAsync();
+                return Ok(new { mensaje = "Nota actualizada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al actualizar la nota: {ex.Message}");
+            }
+        }
+
 
 
         [HttpDelete]

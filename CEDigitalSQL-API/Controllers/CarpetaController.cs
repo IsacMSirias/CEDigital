@@ -50,5 +50,20 @@ namespace CEDigitalSQL_API.Controllers
 
             return Ok("Carpeta creada correctamente.");
         }
+
+        // DELETE: ced/sql/carpeta/del/{id}
+        [HttpDelete]
+        [Route("del/{id}")]
+        public async Task<IActionResult> EliminarCarpeta(int id)
+        {
+            var carpeta = await _carpetaContext.Carpeta.FindAsync(id);
+            if (carpeta == null)
+                return NotFound("Carpeta no encontrada.");
+
+            _carpetaContext.Carpeta.Remove(carpeta);
+            await _carpetaContext.SaveChangesAsync();
+
+            return Ok("Carpeta eliminada correctamente.");
+        }
     }
 }

@@ -21,5 +21,8 @@ namespace CEDigitalMongo_API.Modelos
         [BsonElement("CedulaEstudiante"), BsonRepresentation(BsonType.Int64)]
         public int CedulaEstudiante { get; set; }
 
+        [BsonElement("TelefonoEstudiante"), BsonRepresentation(BsonType.Int64)]
+        public int TelefonoEstudiante { get; set; }
+
     }
 }

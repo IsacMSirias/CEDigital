@@ -76,6 +76,24 @@ namespace CEDigitalSQL_API.Controllers
             return Ok(resultado);
         }
 
+        // GET: ced/sql/matricula/list?idGrupo=1
+        [HttpGet]
+        [Route("list")]
+        public async Task<IActionResult> ListarEstudiantesPorGrupo(int idGrupo)
+        {
+            var grupoExiste = await _grupoContext.Grupo.AnyAsync(g => g.IdGrupo == idGrupo);
+            if (!grupoExiste)
+                return NotFound("Grupo no encontrado.");
+
+            var estudiantes = await _matriculaContext.Matricula
+                .Where(m => m.IdGrupo == idGrupo)
+                .Select(m => new { CarnetEstudiante = m.CarnetEstudiante })
+                .ToListAsync();
+
+            return Ok(estudiantes);
+        }
+
+
 
         // POST: ced/sql/matricula/new
         [HttpPost]

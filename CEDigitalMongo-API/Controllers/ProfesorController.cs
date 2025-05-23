@@ -41,7 +41,7 @@ namespace CEDigitalMongo_API.Controllers
         }
 
         // POST: api/profesor/login
-        [HttpPost("login")]
+        [HttpGet("login")]
         public async Task<ActionResult<Profesor>> ValidarProfesor(string correo, string password)
         {
             var filter = Builders<Profesor>.Filter.And(
