@@ -14,19 +14,19 @@ GO
 
 CREATE TABLE [Archivo] (
     [IdArchivo] int NOT NULL IDENTITY,
-    [FechaSubidaArchivo] datetime2 DEFAULT GETDATE(),
+    [FechaSubidaArchivo] datetime2 DEFAULT GETDATE() NOT NULL,
     [ContenidoArchivo] varbinary(max) NOT NULL,
     [TamañoArchivo] int NOT NULL,
-    [CarnetEstudiante] int DEFAULT -1,
-    [CedulaProfesor] int DEFAULT -1,
-    [IdCarpeta] int DEFAULT -1,
+    [CarnetEstudiante] int DEFAULT NULL,
+    [CedulaProfesor] int DEFAULT NULL,
+    [IdCarpeta] int DEFAULT NULL,
     CONSTRAINT [PK_Archivo] PRIMARY KEY ([IdArchivo])
 );
 
 CREATE TABLE [Carpeta] (
     [IdCarpeta] int NOT NULL IDENTITY,
     [RutaCarpeta] nvarchar(100) NOT NULL,
-    [CedulaProfesor] int DEFAULT -2,
+    [CedulaProfesor] int DEFAULT NULL,
     [IdGrupo] int NOT NULL,
     CONSTRAINT [PK_Carpeta] PRIMARY KEY ([IdCarpeta])
 );
@@ -41,10 +41,10 @@ CREATE TABLE [Curso] (
 
 CREATE TABLE [Entregable] (
     [IdEntregable] int NOT NULL IDENTITY,
-    [NotaEntregable] int DEFAULT 0,
-    [ObservacionesEntregable] nvarchar(100) DEFAULT 'N/A',
-    [IdArchivoDesglose] int DEFAULT -1,
-    [IdArchivoEntrega] int DEFAULT -1,
+    [NotaEntregable] float DEFAULT 0 NOT NULL,
+    [ObservacionesEntregable] nvarchar(100) DEFAULT 'N/A' NOT NULL,
+    [IdArchivoDesglose] int DEFAULT NULL,
+    [IdArchivoEntrega] int DEFAULT NULL,
     [IdEvaluacion] int NOT NULL,
     [CarnetEstudiante] int NOT NULL,
     CONSTRAINT [PK_Entregable] PRIMARY KEY ([IdEntregable])
@@ -64,12 +64,12 @@ CREATE TABLE [Estudiante] (
 
 CREATE TABLE [Evaluacion] (
     [IdEvaluacion] int NOT NULL IDENTITY,
-    [EspecificacionEvaluacion] varbinary(max) DEFAULT 0x,
+    [EspecificacionEvaluacion] varbinary(max) DEFAULT 0x NOT NULL,
     [NombreEvaluacion] nvarchar(100) NOT NULL,
     [PesoEvaluacion] int NOT NULL,
-    [EstadoNotas] bit DEFAULT 0,
-    [EsGrupalEvaluacion] bit DEFAULT 0,
-    [LimiteEntregaEvaluacion] datetime2 NULL,
+    [EstadoNotas] bit DEFAULT 0 NOT NULL,
+    [EsGrupalEvaluacion] bit DEFAULT 0 NOT NULL,
+    [LimiteEntregaEvaluacion] datetime2 DEFAULT NULL,
     [IdRubro] int NOT NULL,
     CONSTRAINT [PK_Evaluacion] PRIMARY KEY ([IdEvaluacion])
 );
@@ -98,8 +98,8 @@ CREATE TABLE [Noticia] (
     [IdNoticia] int NOT NULL IDENTITY,
     [TituloNoticia] nvarchar(100) NOT NULL,
     [MensajeNoticia] nvarchar(1000) NOT NULL,
-    [FechaPublicacionNoticia] datetime2 DEFAULT GETDATE(),
-    [CedulaProfesor] int DEFAULT -1,
+    [FechaPublicacionNoticia] datetime2 DEFAULT GETDATE() NOT NULL,
+    [CedulaProfesor] int DEFAULT -1 NOT NULL,
     [IdGrupo] int NOT NULL,
     CONSTRAINT [PK_Noticia] PRIMARY KEY ([IdNoticia])
 );
@@ -127,7 +127,7 @@ CREATE TABLE [Semestre] (
     [IdSemestre] int NOT NULL IDENTITY,
     [AñoSemestre] int NOT NULL,
     [PeriodoSemestre] char NOT NULL,
-    [EstadoSemestre] char DEFAULT 'E',
+    [EstadoSemestre] char DEFAULT 'E' NOT NULL,
     CONSTRAINT [PK_Semestre] PRIMARY KEY ([IdSemestre])
 );
 
@@ -146,7 +146,8 @@ CREATE TABLE [Subgrupo] (
 ALTER TABLE [Archivo]
     ADD 
         CONSTRAINT [FK_Archivo_Estudiante_CarnetEstudiante] FOREIGN KEY ([CarnetEstudiante]) REFERENCES [Estudiante] ([CarnetEstudiante]) ON DELETE SET DEFAULT,
-        CONSTRAINT [FK_Archivo_Profesor_CedulaProfesor] FOREIGN KEY ([CedulaProfesor]) REFERENCES [Profesor] ([CedulaProfesor]) ON DELETE SET DEFAULT;
+        CONSTRAINT [FK_Archivo_Profesor_CedulaProfesor] FOREIGN KEY ([CedulaProfesor]) REFERENCES [Profesor] ([CedulaProfesor]) ON DELETE SET DEFAULT,
+        CONSTRAINT [FK_Archivo_Carpeta_IdCarpeta] FOREIGN KEY ([IdCarpeta]) REFERENCES [Carpeta] ([IdCarpeta]) ON DELETE CASCADE;
 
 ALTER TABLE [Carpeta]
     ADD 
