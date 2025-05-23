@@ -1,15 +1,38 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
-const CoursePage = ({ courseName }) => {
+
+const CoursePage = () => {
   const router = useRouter();
+  const [idGrupo, setIdGrupo] = useState(0);
+  const [nombreCurso, setNombreCurso] = useState('');
+
+  useEffect(() => {
+    const fetchPrev = async () => {
+      const storedIdGrupo = await AsyncStorage.getItem('idGrupo');
+      if (storedIdGrupo) {
+        setIdGrupo(storedIdGrupo);
+      }
+      const storedNombreCurso = await AsyncStorage.getItem('nombreCurso');
+      if (storedNombreCurso) {
+        setNombreCurso(storedNombreCurso);
+      }
+    };
+
+    fetchPrev();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Curso: {courseName}</Text>
+      <Text style={styles.title}>Curso: {nombreCurso}</Text>
 
       <View style={styles.buttonsContainer}>
-        <Button title="Ver Documentos" onPress={() => router.push('/profesores/documentos')} />
+        <Button title="Ver Documentos" onPress={async () => {
+          await AsyncStorage.setItem('idGrupo', idGrupo);
+          router.push('/profesores/documentos');
+        }} />
         <Button title="Gestionar Rubros" onPress={() => router.push('/profesores/rubros')} />
         <Button title="Asignar Evaluaciones" onPress={() => router.push('/profesores/evaluaciones')} />
         <Button title="Evaluar Entregables" onPress={() => router.push('/profesores/entregables')} />

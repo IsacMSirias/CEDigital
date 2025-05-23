@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Button, Platform, StyleSheet, Text, View } from 'react-native';
 import { API_URL } from '../../utils';
 
 const API = API_URL + '/ced/sql';
@@ -32,38 +31,21 @@ const Archivos = () => {
 
   useEffect(() => { fetchArchivos(); }, [idCarpeta]);
 
-  const handleFileUpload = async (file) => {
+  const descargarArchivo = (nombre, base64) => {
     try {
-      const carnet = await AsyncStorage.getItem('carnetEstudiante');
-      const cedula = await AsyncStorage.getItem('cedulaProfesor');
-      const reader = new FileReader();
+      const byteCharacters = atob(base64);
+      const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray]);
+      const url = URL.createObjectURL(blob);
 
-      reader.onload = async () => {
-        const base64 = reader.result.split(',')[1];
-
-        const archivo = {
-          contenidoArchivo: base64,
-          fechaSubidaArchivo: new Date().toISOString(),
-          tamañoArchivo: file.size,
-          carnetEstudiante: parseInt(carnet),
-          cedulaProfesor: cedula ?? null,
-          idCarpeta: parseInt(idCarpeta),
-        };
-
-        const res = await fetch(`${API}/Archivo/new`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(archivo),
-        });
-
-        if (!res.ok) throw new Error('Error al subir el archivo');
-        alert(`Archivo ${file.name} subido con éxito`);
-        fetchArchivos();
-      };
-
-      reader.readAsDataURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombre || 'archivo.bin';
+      a.click();
+      URL.revokeObjectURL(url);
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      console.error("Error al descargar archivo:", error);
     }
   };
 
@@ -85,20 +67,16 @@ const Archivos = () => {
           <Text style={styles.nombre}>Archivo #{archivo.idArchivo}</Text>
           <Text style={styles.subtexto}>Tamaño: {archivo.tamañoArchivo} bytes</Text>
           <Text style={styles.subtexto}>Fecha: {new Date(archivo.fechaSubidaArchivo).toLocaleString()}</Text>
+          {Platform.OS === 'web' && (
+            <Button
+              title="Descargar"
+              onPress={() =>
+                descargarArchivo(`archivo_${archivo.idArchivo}.bin`, archivo.contenidoArchivo)
+              }
+            />
+          )}
         </View>
       ))}
-
-      <View
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          const file = e.dataTransfer.files[0];
-          if (file) handleFileUpload(file);
-        }}
-        style={styles.dropZone}
-      >
-        <Text style={{ textAlign: 'center' }}>Arrastra aquí un archivo para subirlo</Text>
-      </View>
 
       <View style={styles.backButton}>
         <Button title="Volver" onPress={() => router.back()} />
@@ -115,15 +93,6 @@ const styles = StyleSheet.create({
   subtexto: { fontSize: 12, color: '#555' },
   backButton: { marginTop: 20 },
   error: { color: 'red', marginBottom: 10 },
-  dropZone: {
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: '#888',
-    borderRadius: 6,
-    padding: 20,
-    marginVertical: 20,
-    backgroundColor: '#f9f9f9',
-  },
 });
 
 export default Archivos;
