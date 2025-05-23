@@ -17,6 +17,8 @@ namespace CEDigitalSQL_API.Models
         public int IdArchivoEntrega { get; set; }
 
         public int IdEvaluacion { get; set; }
+
+        public int CarnetEstudiante { get; set; }
     }
 
 

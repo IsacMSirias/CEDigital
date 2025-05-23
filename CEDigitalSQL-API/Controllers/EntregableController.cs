@@ -75,6 +75,20 @@ namespace CEDigitalSQL_API.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("stufent-eval")]
+        public async Task<IActionResult> ObtenerEntregablePorEstudianteYEvaluacion(int carnet, int evaluacion)
+        {
+            var entregable = await _entregableContext.Entregable
+                .FirstOrDefaultAsync(e => e.CarnetEstudiante == carnet && e.IdEvaluacion == evaluacion);
+
+            if (entregable == null)
+                return NotFound("Entregable no encontrado para el estudiante y evaluación especificados.");
+
+            return Ok(entregable);
+        }
+
+
         [HttpDelete]
         [Route("del")]
         public async Task<IActionResult> EliminarEntregable(int id)

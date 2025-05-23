@@ -46,6 +46,7 @@ CREATE TABLE [Entregable] (
     [IdArchivoDesglose] int DEFAULT -1,
     [IdArchivoEntrega] int DEFAULT -1,
     [IdEvaluacion] int NOT NULL,
+    [CarnetEstudiante] int NOT NULL,
     CONSTRAINT [PK_Entregable] PRIMARY KEY ([IdEntregable])
 );
 
@@ -160,6 +161,7 @@ ALTER TABLE [Entregable]
     ADD 
         CONSTRAINT [FK_Entregable_Archivo_IdArchivoDesglose] FOREIGN KEY ([IdArchivoDesglose]) REFERENCES [Archivo] ([IdArchivo]) ON DELETE NO ACTION,
         CONSTRAINT [FK_Entregable_Archivo_IdArchivoEntrega] FOREIGN KEY ([IdArchivoEntrega]) REFERENCES [Archivo] ([IdArchivo]) ON DELETE NO ACTION,
+        CONSTRAINT [FK_Entregable_Estudiante_Carnet] FOREIGN KEY ([CarnetEstudiante]) REFERENCES [Estudiante] ([CarnetEstudiante]) ON DELETE NO ACTION,
         CONSTRAINT [FK_Entregable_Evaluacion_IdEvaluacion] FOREIGN KEY ([IdEvaluacion]) REFERENCES [Evaluacion] ([IdEvaluacion]) ON DELETE CASCADE;
 
 ALTER TABLE [Evaluacion]
