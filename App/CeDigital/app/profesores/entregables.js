@@ -23,7 +23,7 @@ const EntregablesPage = () => {
   const [expandedRubros, setExpandedRubros] = useState({});
   const [expandedEvaluaciones, setExpandedEvaluaciones] = useState({});
   const [selectedEntregable, setSelectedEntregable] = useState(null);
-  const [nota, setNota] = useState('');
+  const [nota, setNota] = useState(0);
   const [observaciones, setObservaciones] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -91,11 +91,10 @@ const EntregablesPage = () => {
 
   const handleGuardarNota = async () => {
     if (!selectedEntregable) return;
-    await fetch(`${API}/Entregable/set-nota?id=${selectedEntregable.idEntregable}`, {
+    await fetch(`${API}/Entregable/set-nota?id=${selectedEntregable.idEntregable}&notaEntregable=${nota}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        notaEntregable: parseFloat(nota),
         observacionesEntregable: observaciones
       })
     });
