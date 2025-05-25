@@ -6,9 +6,7 @@ const options = [
   { id: '1', label: 'Gestión de Cursos', route: '/administradores/coursepages' },
   { id: '2', label: 'Inicializar Semestre', route: '/administradores/semesterpages' },
   { id: '3', label: 'Matricular Estudiantes', route: '/administradores/enrollmentpage' },
-  { id: '4', label: 'Crear Carpetas de Documentos', route: '/administradores/folderspage' },
-  { id: '5', label: 'Crear Rubros Predeterminados', route: '/administradores/rubricspage' },
-  { id: '6', label: 'Cargar desde Excel', route: '/administradores/exceluploadpage' },
+  { id: '4', label: 'Cargar desde Excel', route: '/administradores/exceluploadpage' },
 ];
 
 const MainPage = () => {

@@ -3,6 +3,8 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, FlatList, StyleSheet, Text, View } from 'react-native';
 import { API_URL, fetchEstudianteFromMongo } from '../../utils';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const API = API_URL + '/ced/sql';
 
@@ -11,12 +13,18 @@ const ReporteMatriculadosPage = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [grupoInfo, setGrupoInfo] = useState(null);
 
   useEffect(() => {
     const fetchEstudiantes = async () => {
       try {
         const grupoId = await AsyncStorage.getItem('idGrupo');
         if (!grupoId) throw new Error('ID de grupo no encontrado');
+
+        const grupoRes = await fetch(`${API}/Grupo/get?id=${grupoId}`);
+        if (!grupoRes.ok) throw new Error('Error al obtener datos del grupo');
+        const grupoData = await grupoRes.json();
+        setGrupoInfo(grupoData);
 
         const response = await fetch(`${API}/Matricula/list?idGrupo=${grupoId}`);
         if (!response.ok) throw new Error('Error al obtener carnets');
@@ -40,6 +48,22 @@ const ReporteMatriculadosPage = () => {
     fetchEstudiantes();
   }, []);
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Reporte de Estudiantes Matriculados', 14, 16);
+    autoTable(doc, {
+      startY: 20,
+      head: [['Carnet', 'Nombre', 'Correo', 'Teléfono']],
+      body: estudiantes.map(e => [
+        e.carnetEstudiante,
+        e.nombreEstudiante,
+        e.correoEstudiante,
+        e.telefonoEstudiante
+      ])
+    });
+    doc.save('reporte_estudiantes.pdf');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Estudiantes Matriculados</Text>
@@ -60,6 +84,10 @@ const ReporteMatriculadosPage = () => {
           )}
         />
       )}
+
+      <View style={{ marginTop: 10 }}>
+        <Button title="Exportar a PDF" onPress={handleExportPDF} />
+      </View>
 
       <View style={styles.backButton}>
         <Button title="Volver" onPress={() => router.back()} />

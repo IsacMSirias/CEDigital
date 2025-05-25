@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ScrollView,
   View,
@@ -7,104 +7,95 @@ import {
   Button,
   FlatList,
   StyleSheet,
-  Alert,
   TouchableOpacity,
+  Modal,
+  Platform
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { API_URL } from '../../utils';
+
+const API = API_URL + '/ced/sql';
 
 const CoursePages = () => {
   const router = useRouter();
+  const [semestres, setSemestres] = useState([]);
+  const [cursos, setCursos] = useState([]);
+  const [escuelas, setEscuelas] = useState([]);
+  const [expanded, setExpanded] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedSemestre, setSelectedSemestre] = useState(null);
+  const [grupoData, setGrupoData] = useState({ idCurso: '', numeroGrupo: '', idEscuela: '' });
 
-  const [courses, setCourses] = useState([
-    { id: '1', code: 'CE3101', name: 'Bases de Datos', credits: 4, career: 'Computadores' },
-    { id: '2', code: 'CE4201', name: 'Redes de Computadoras', credits: 3, career: 'Computadores' },
-  ]);
+  useEffect(() => {
+    fetch(`${API}/Semestre/list`)
+      .then(res => res.json())
+      .then(data => {
+        const grouped = data.reduce((acc, cur) => {
+          acc[cur.añoSemestre] = [...(acc[cur.añoSemestre] || []), cur];
+          return acc;
+        }, {});
+        setSemestres(grouped);
+      });
 
-  const [newCourse, setNewCourse] = useState({
-    code: '',
-    name: '',
-    credits: '',
-    career: '',
-  });
+    fetch(`${API}/Curso/list`)
+      .then(res => res.json())
+      .then(setCursos);
 
-  const handleAddCourse = () => {
-    const { code, name, credits, career } = newCourse;
+    fetch(`${API}/Escuela/list`)
+      .then(res => res.json())
+      .then(setEscuelas);
+  }, []);
 
-    if (!code || !name || !credits || !career) {
-      Alert.alert('Error', 'Todos los campos son obligatorios.');
-      return;
-    }
-
-    const newId = (courses.length + 1).toString();
-
-    setCourses([
-      ...courses,
-      {
-        id: newId,
-        code,
-        name,
-        credits,
-        career,
-      },
-    ]);
-
-    setNewCourse({ code: '', name: '', credits: '', career: '' });
+  const toggleExpand = (año) => {
+    setExpanded(prev => ({ ...prev, [año]: !prev[año] }));
   };
 
-  const handleDisableCourse = (id) => {
-    Alert.alert('Curso deshabilitado', `Curso con ID ${id} fue deshabilitado (simulado).`);
-    setCourses(courses.filter((c) => c.id !== id));
+  const handleOpenModal = (semestre) => {
+    setSelectedSemestre(semestre);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setGrupoData({ idCurso: '', numeroGrupo: '', idEscuela: '' });
+    setModalVisible(false);
+  };
+
+  const handleAddGrupo = async () => {
+    if (!grupoData.idCurso || !grupoData.numeroGrupo || !selectedSemestre?.idSemestre) return;
+
+    const payload = {
+      numeroGrupo: parseInt(grupoData.numeroGrupo),
+      idCurso: parseInt(grupoData.idCurso),
+      idSemestre: selectedSemestre.idSemestre
+    };
+
+    await fetch(`${API}/Grupo/new`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    handleCloseModal();
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Gestión de Cursos</Text>
+      <Text style={styles.title}>Gestión de Grupos por Semestre</Text>
 
-      <FlatList
-        data={courses}
-        keyExtractor={(item) => item.id}
-        scrollEnabled={false}
-        ListEmptyComponent={<Text>No hay cursos registrados.</Text>}
-        renderItem={({ item }) => (
-          <View style={styles.courseItem}>
-            <Text style={styles.courseText}>
-              {item.code} - {item.name} ({item.credits} créditos) - {item.career}
-            </Text>
-            <TouchableOpacity onPress={() => handleDisableCourse(item.id)}>
-              <Text style={styles.disableButton}>Deshabilitar</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+      {Object.entries(semestres).map(([año, lista]) => (
+        <View key={año} style={styles.section}>
+          <TouchableOpacity onPress={() => toggleExpand(año)}>
+            <Text style={styles.sectionTitle}>{expanded[año] ? '▼' : '▶'} {año}</Text>
+          </TouchableOpacity>
 
-      <Text style={styles.subtitle}>Agregar nuevo curso</Text>
-      <TextInput
-        placeholder="Código"
-        style={styles.input}
-        value={newCourse.code}
-        onChangeText={(text) => setNewCourse({ ...newCourse, code: text })}
-      />
-      <TextInput
-        placeholder="Nombre"
-        style={styles.input}
-        value={newCourse.name}
-        onChangeText={(text) => setNewCourse({ ...newCourse, name: text })}
-      />
-      <TextInput
-        placeholder="Créditos"
-        keyboardType="numeric"
-        style={styles.input}
-        value={newCourse.credits}
-        onChangeText={(text) => setNewCourse({ ...newCourse, credits: text })}
-      />
-      <TextInput
-        placeholder="Carrera"
-        style={styles.input}
-        value={newCourse.career}
-        onChangeText={(text) => setNewCourse({ ...newCourse, career: text })}
-      />
-
-      <Button title="Agregar curso" onPress={handleAddCourse} />
+          {expanded[año] && lista.map(sem => (
+            <View key={sem.idSemestre} style={styles.item}>
+              <Text>Semestre {sem.periodoSemestre} - Estado: {sem.estadoSemestre}</Text>
+              <Button title="Añadir Grupo" onPress={() => handleOpenModal(sem)} />
+            </View>
+          ))}
+        </View>
+      ))}
 
       <TouchableOpacity
         style={styles.backButton}
@@ -112,59 +103,84 @@ const CoursePages = () => {
       >
         <Text style={styles.backButtonText}>Volver al panel de administración</Text>
       </TouchableOpacity>
+
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Añadir Grupo</Text>
+            <Text>Año: {selectedSemestre?.añoSemestre}</Text>
+            <Text>Periodo: {selectedSemestre?.periodoSemestre}</Text>
+
+            <Text>Escuela</Text>
+            <select
+              value={grupoData.idEscuela}
+              onChange={(e) => setGrupoData({ ...grupoData, idEscuela: e.target.value })}
+              style={styles.input}
+            >
+              <option value="">Seleccione una escuela</option>
+              {escuelas.map(e => (
+                <option key={e.idEscuela} value={e.idEscuela}>{e.nombreEscuela}</option>
+              ))}
+            </select>
+
+            <Text>Curso</Text>
+            <select
+              value={grupoData.idCurso}
+              onChange={(e) => setGrupoData({ ...grupoData, idCurso: e.target.value })}
+              style={styles.input}
+            >
+              <option value="">Seleccione un curso</option>
+              {cursos.map(c => (
+                <option key={c.idCurso} value={c.idCurso}>{c.nombreCurso}</option>
+              ))}
+            </select>
+
+            <TextInput
+              placeholder="Número de grupo"
+              keyboardType="numeric"
+              style={styles.input}
+              value={grupoData.numeroGrupo}
+              onChangeText={(text) => setGrupoData({ ...grupoData, numeroGrupo: text })}
+            />
+
+            <Button title="Guardar" onPress={handleAddGrupo} />
+            <Button title="Cerrar" onPress={handleCloseModal} color="#999" />
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    gap: 10,
+  container: { padding: 20, backgroundColor: '#fff' },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
+  section: { marginBottom: 20 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+  item: { backgroundColor: '#f0f0f0', padding: 10, borderRadius: 6, marginBottom: 5 },
+  backButton: { marginTop: 30, padding: 15, backgroundColor: '#6c757d', borderRadius: 8 },
+  backButtonText: { color: '#fff', fontWeight: 'bold', textAlign: 'center' },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  modalContent: {
     backgroundColor: '#fff',
+    padding: 20,
+    width: '90%',
+    borderRadius: 10
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginTop: 20,
-  },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
     borderRadius: 6,
     marginBottom: 10,
-    backgroundColor: '#fff',
-  },
-  courseItem: {
-    backgroundColor: '#e0e0e0',
-    padding: 12,
-    borderRadius: 6,
-    marginBottom: 8,
-  },
-  courseText: {
-    fontSize: 16,
-  },
-  disableButton: {
-    color: 'red',
-    marginTop: 5,
-  },
-  backButton: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: '#6c757d',
-    borderRadius: 8,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
+    backgroundColor: '#fff'
+  }
 });
 
 export default CoursePages;
