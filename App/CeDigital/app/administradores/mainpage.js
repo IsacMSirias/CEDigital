@@ -3,8 +3,8 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import { useRouter } from 'expo-router';
 
 const options = [
-  { id: '1', label: 'Gestión de Cursos', route: '/administradores/coursepages' },
-  { id: '2', label: 'Inicializar Semestre', route: '/administradores/semesterpages' },
+  { id: '1', label: 'Gestión de Grupos/Cursos', route: '/administradores/coursepages' },
+  { id: '2', label: 'Gestion de Semestres', route: '/administradores/semesterpages' },
   { id: '3', label: 'Matricular Estudiantes', route: '/administradores/enrollmentpage' },
   { id: '4', label: 'Cargar desde Excel', route: '/administradores/exceluploadpage' },
 ];
