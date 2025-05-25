@@ -64,7 +64,7 @@ CREATE TABLE [Estudiante] (
 
 CREATE TABLE [Evaluacion] (
     [IdEvaluacion] int NOT NULL IDENTITY,
-    [EspecificacionEvaluacion] varbinary(max) DEFAULT 0x NOT NULL,
+    [IdArchivoEspecificacion] int DEFAULT NULL,
     [NombreEvaluacion] nvarchar(100) NOT NULL,
     [PesoEvaluacion] int NOT NULL,
     [EstadoNotas] bit DEFAULT 0 NOT NULL,
@@ -167,7 +167,8 @@ ALTER TABLE [Entregable]
 
 ALTER TABLE [Evaluacion]
     ADD 
-        CONSTRAINT [FK_Evaluacion_Rubro_IdRubro] FOREIGN KEY ([IdRubro]) REFERENCES [Rubro] ([IdRubro]) ON DELETE CASCADE;
+        CONSTRAINT [FK_Evaluacion_Rubro_IdRubro] FOREIGN KEY ([IdRubro]) REFERENCES [Rubro] ([IdRubro]) ON DELETE CASCADE,
+        CONSTRAINT [FK_Evaluacion_Archivo_IdArchivoEspecificacion] FOREIGN KEY ([IdArchivoEspecificacion]) REFERENCES [Archivo] ([IdArchivo]) ON DELETE SET DEFAULT;
 
 ALTER TABLE [Grupo]
     ADD 
@@ -202,4 +203,9 @@ ALTER TABLE [Subgrupo]
     ADD 
         CONSTRAINT [FK_Subgrupo_Evaluacion_IdEvaluacion] FOREIGN KEY ([IdEvaluacion]) REFERENCES [Evaluacion] ([IdEvaluacion]) ON DELETE CASCADE,
         CONSTRAINT [FK_Subgrupo_Grupo_IdGrupo] FOREIGN KEY ([IdGrupo]) REFERENCES [Grupo] ([IdGrupo]) ON DELETE NO ACTION;
+
+ALTER TABLE [Semestre] 
+    ADD 
+        CONSTRAINT [COND_EstadoSemestre] CHECK ([EstadoSemestre] IN ('E','C','F')),
+        CONSTRAINT [COND_PeriodoSemestre] CHECK ([PeriodoSemestre] IN ('1','2','V'));
 GO

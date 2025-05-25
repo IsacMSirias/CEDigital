@@ -7,7 +7,7 @@ namespace CEDigitalMongo_API.Modelos
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? IdAdministrador { get; set; }
+        public required string IdAdministrador { get; set; }
 
         [BsonElement("CorreoAdministrador")]
         public string? CorreoAdministrador { get; set; }

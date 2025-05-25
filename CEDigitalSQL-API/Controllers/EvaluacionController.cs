@@ -82,23 +82,60 @@ namespace CEDigitalSQL_API.Controllers
 
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> EditarEvaluacion(int id, Evaluacion actualizada)
+        public async Task<IActionResult> EditarEvaluacion(int id, [FromBody] Dictionary<string, object> camposActualizados)
         {
             var evaluacion = await _evaluacionContext.Evaluacion.FindAsync(id);
             if (evaluacion == null)
-                return NotFound();
+                return NotFound("Evaluación no encontrada.");
 
-            evaluacion.NombreEvaluacion = actualizada.NombreEvaluacion;
-            evaluacion.PesoEvaluacion = actualizada.PesoEvaluacion;
-            evaluacion.EspecificacionEvaluacion = actualizada.EspecificacionEvaluacion;
-            evaluacion.EstadoNotas = actualizada.EstadoNotas;
-            evaluacion.EsGrupalEvaluacion = actualizada.EsGrupalEvaluacion;
-            evaluacion.LimiteEntregaEvaluacion = actualizada.LimiteEntregaEvaluacion;
-            evaluacion.IdRubro = actualizada.IdRubro;
+            foreach (var campo in camposActualizados)
+            {
+                switch (campo.Key.ToLower())
+                {
+                    case "nombreevaluacion":
+                        evaluacion.NombreEvaluacion = campo.Value?.ToString();
+                        break;
+                    case "pesoevaluacion":
+                        if (int.TryParse(campo.Value?.ToString(), out int peso))
+                            evaluacion.PesoEvaluacion = peso;
+                        break;
+                    case "idarchivoespecificacion":
+                        if (int.TryParse(campo.Value?.ToString(), out int idArchivo))
+                            evaluacion.IdArchivoEspecificacion = idArchivo;
+                        else
+                            evaluacion.IdArchivoEspecificacion = null;
+                        break;
+                    case "estadonotas":
+                        if (bool.TryParse(campo.Value?.ToString(), out bool estado))
+                            evaluacion.EstadoNotas = estado;
+                        break;
+                    case "esgrupalevaluacion":
+                        if (bool.TryParse(campo.Value?.ToString(), out bool grupal))
+                            evaluacion.EsGrupalEvaluacion = grupal;
+                        break;
+                    case "limiteentregaevaluacion":
+                        if (DateTime.TryParse(campo.Value?.ToString(), out DateTime limite))
+                            evaluacion.LimiteEntregaEvaluacion = limite;
+                        else
+                            evaluacion.LimiteEntregaEvaluacion = null;
+                        break;
+                    case "idrubro":
+                        if (int.TryParse(campo.Value?.ToString(), out int idRubro))
+                        {
+                            var rubroExiste = await _rubroContext.Rubro.AnyAsync(r => r.IdRubro == idRubro);
+                            if (!rubroExiste)
+                                return NotFound("Rubro no encontrado.");
+                            evaluacion.IdRubro = idRubro;
+                        }
+                        break;
+                }
+            }
 
             await _evaluacionContext.SaveChangesAsync();
-            return Ok(new { message = "Evaluación actualizada exitosamente." });
+            return Ok(new { message = "Evaluación actualizada parcialmente con éxito." });
         }
+
+
 
         [HttpDelete]
         [Route("del")]

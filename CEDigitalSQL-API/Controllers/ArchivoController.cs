@@ -49,7 +49,6 @@ namespace CEDigitalSQL_API.Controllers
             return Ok(archivos);
         }
 
-        // POST: ced/sql/Archivo/new
         [HttpPost]
         [Route("new")]
         public async Task<IActionResult> SubirArchivo([FromBody] Archivo archivo)
@@ -60,12 +59,12 @@ namespace CEDigitalSQL_API.Controllers
             if (archivo.ContenidoArchivo == null || archivo.ContenidoArchivo.Length == 0)
                 return BadRequest("El contenido del archivo no puede estar vacío.");
 
-            var carpetaExiste = await _carpetaContext.Carpeta.AnyAsync(c => c.IdCarpeta == archivo.IdCarpeta);
-            if (!carpetaExiste)
-                return NotFound("Carpeta no encontrada.");
-
             try
             {
+                var carpetaExiste = await _carpetaContext.Carpeta.AnyAsync(c => c.IdCarpeta == archivo.IdCarpeta);
+                if (!carpetaExiste)
+                    return NotFound("Carpeta no encontrada.");
+
                 archivo.FechaSubidaArchivo = DateTime.UtcNow;
 
                 await _archivoContext.Archivo.AddAsync(archivo);
@@ -73,10 +72,17 @@ namespace CEDigitalSQL_API.Controllers
 
                 return Ok(new { mensaje = "Archivo subido correctamente", idArchivo = archivo.IdArchivo });
             }
+            catch (FormatException ex)
+            {
+                return BadRequest($"Formato de archivo inválido: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return BadRequest($"Error al procesar archivo: {ex.Message}");
+                return StatusCode(500, $"Error inesperado: {ex.Message}");
             }
         }
+
+
+
     }
 }

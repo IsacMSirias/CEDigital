@@ -7,7 +7,7 @@ namespace CEDigitalSQL_API.Models
         [Key]
         public int IdEvaluacion { get; set; }
 
-        public byte[] EspecificacionEvaluacion { get; set; }
+        public int? IdArchivoEspecificacion { get; set; }
 
         public required string NombreEvaluacion { get; set; }
 
@@ -17,7 +17,6 @@ namespace CEDigitalSQL_API.Models
 
         public bool EsGrupalEvaluacion { get; set; }
 
-        // ✅ Cambiado de DateTime a DateTime? para aceptar NULL
         public DateTime? LimiteEntregaEvaluacion { get; set; }
 
         public required int IdRubro { get; set; }
